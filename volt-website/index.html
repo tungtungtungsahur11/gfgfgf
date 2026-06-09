@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VOLT — Solar Skin</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+</head>
+<body>
+
+  <!-- ─── NAVIGATION ─────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="logo">VOLT<span class="dot">.</span></a>
+      <ul class="nav-links">
+        <li><a href="#product">Produkt</a></li>
+        <li><a href="#features">Vorteile</a></li>
+        <li><a href="#how">Wie es funktioniert</a></li>
+        <li><a href="#market">Zielgruppe</a></li>
+        <li><a href="#pricing">Preis</a></li>
+        <li><a href="#contact" class="nav-cta">Jetzt anfragen</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#product" class="mob-link">Produkt</a></li>
+      <li><a href="#features" class="mob-link">Vorteile</a></li>
+      <li><a href="#how" class="mob-link">Wie es funktioniert</a></li>
+      <li><a href="#market" class="mob-link">Zielgruppe</a></li>
+      <li><a href="#pricing" class="mob-link">Preis</a></li>
+      <li><a href="#contact" class="mob-link">Kontakt</a></li>
+    </ul>
+  </div>
+
+  <!-- ─── HERO ───────────────────────────────────────────────────── -->
+  <section id="hero" class="hero-section">
+    <canvas id="solarCanvas"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Introducing</p>
+      <h1 class="hero-title">
+        <span class="word">Solar</span>
+        <span class="word accent"> Skin</span>
+      </h1>
+      <p class="hero-sub">SOLAR. SIMPLU. SIGUR.</p>
+      <p class="hero-desc">Die erste universelle Solarfolie für Elektrofahrzeuge.<br>Mehr Reichweite. Weniger Ladestopps. Null Kompromisse.</p>
+      <div class="hero-actions">
+        <a href="#product" class="btn btn-primary">Entdecken</a>
+        <a href="#pricing" class="btn btn-ghost">Preise ansehen</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scrollen</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── TAGLINE STRIP ──────────────────────────────────────────── -->
+  <section class="tagline-section">
+    <div class="tagline-inner">
+      <div class="tagline-track">
+        <span>Innovation &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Verantwortung &nbsp;·&nbsp;</span>
+        <span>Zugänglichkeit &nbsp;·&nbsp;</span>
+        <span>Kundenfokus &nbsp;·&nbsp;</span>
+        <span>Innovation &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Verantwortung &nbsp;·&nbsp;</span>
+        <span>Zugänglichkeit &nbsp;·&nbsp;</span>
+        <span>Kundenfokus &nbsp;·&nbsp;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROBLEM SECTION ────────────────────────────────────────── -->
+  <section id="problem" class="problem-section">
+    <div class="container">
+      <p class="section-label">Das Problem</p>
+      <h2 class="reveal-text">Elektromobilität hat<br><span class="accent">ein Reichweitenproblem.</span></h2>
+      <div class="problem-grid">
+        <div class="problem-card" data-delay="0">
+          <div class="problem-icon">⚡</div>
+          <h3>Begrenzte Reichweite</h3>
+          <p>Elektrofahrzeuge sind durch ihre Batteriekapazität limitiert und auf eine dichte Ladeinfrastruktur angewiesen.</p>
+        </div>
+        <div class="problem-card" data-delay="0.15">
+          <div class="problem-icon">🔌</div>
+          <h3>Ladeabhängigkeit</h3>
+          <p>Millionen von Fahrern müssen täglich Ladestationen aufsuchen — zeitaufwendig und oft unzuverlässig.</p>
+        </div>
+        <div class="problem-card" data-delay="0.3">
+          <div class="problem-icon">💰</div>
+          <h3>Steigende Stromkosten</h3>
+          <p>Die Energiekosten steigen kontinuierlich. Elektrofahrer zahlen mehr — ohne Alternativen zu haben.</p>
+        </div>
+        <div class="problem-card" data-delay="0.45">
+          <div class="problem-icon">🌍</div>
+          <h3>Fehlende Infrastruktur</h3>
+          <p>In vielen Regionen fehlt ein flächendeckendes Ladenetz — besonders außerhalb von Städten.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRODUCT REVEAL ─────────────────────────────────────────── -->
+  <section id="product" class="product-section">
+    <div class="product-sticky">
+      <div class="product-text-panel">
+        <p class="section-label">Die Lösung</p>
+        <h2>Solar <span class="accent">Skin</span></h2>
+        <p class="product-tagline">Von VOLT</p>
+        <p class="product-desc">
+          Ein flexibles, ultra-dünnes Photovoltaik-Panelsystem, das auf dem Dach Ihres Elektrofahrzeugs montiert wird. Solar Skin wandelt Sonnenenergie in nutzbare Elektrizität um — ohne das Design Ihres Fahrzeugs zu verändern.
+        </p>
+        <ul class="product-bullets">
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Universell für alle Elektrofahrzeugmodelle</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Ultraflach &amp; aerodynamisch</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Intelligentes Energiemanagementsystem</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Mobile App zur Echtzeit-Überwachung</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Installation durch zertifizierte Partner</li>
+        </ul>
+      </div>
+      <div class="product-visual-panel">
+        <div class="solar-car-wrap">
+          <div class="car-body">
+            <div class="car-roof">
+              <div class="solar-panel-anim">
+                <div class="solar-grid"></div>
+                <div class="solar-glow"></div>
+                <div class="energy-particles" id="energyParticles"></div>
+              </div>
+            </div>
+            <div class="car-windows">
+              <div class="car-window front"></div>
+              <div class="car-window rear"></div>
+            </div>
+            <div class="car-body-lower">
+              <div class="car-door-lines">
+                <div class="door-line"></div>
+                <div class="door-line"></div>
+              </div>
+            </div>
+            <div class="car-wheels">
+              <div class="wheel wheel-front"><div class="wheel-inner"></div></div>
+              <div class="wheel wheel-rear"><div class="wheel-inner"></div></div>
+            </div>
+          </div>
+          <div class="energy-beam"></div>
+          <div class="energy-percentage">
+            <span class="pct-num">+</span><span class="pct-val" id="pctVal">0</span><span class="pct-sym">%</span>
+            <p>Mehr Reichweite</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS ──────────────────────────────────────────────────── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-num" data-target="1500">0</span><span class="stat-unit">€</span>
+          <p class="stat-label">Systempreis</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="400">0</span><span class="stat-unit">€</span>
+          <p class="stat-label">Gewinn pro Einheit</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="100">0</span><span class="stat-unit">%</span>
+          <p class="stat-label">Erneuerbare Energie</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="500">0</span><span class="stat-unit">k RON</span>
+          <p class="stat-label">Startinvestition</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES ──────────────────────────────────────────────── -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <p class="section-label">Technologie</p>
+      <h2 class="reveal-text">Gebaut für<br><span class="accent">maximale Leistung.</span></h2>
+      <div class="features-grid">
+
+        <div class="feature-card large" data-index="0">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M30 10 L30 50 M10 30 L50 30" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="30" cy="30" r="8" fill="currentColor" opacity="0.3"/>
+                <circle cx="30" cy="30" r="3" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Flexible Photovoltaikpanele</h3>
+          <p>Modernste Solarzellen aus leichten, widerstandsfähigen Materialien. Passt sich jedem Fahrzeugdach an ohne Aerodynamik zu beeinflussen.</p>
+        </div>
+
+        <div class="feature-card" data-index="1">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="10" y="15" width="40" height="30" rx="4" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 30 L25 25 L30 32 L35 20 L40 30" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Intelligenter Energie-Controller</h3>
+          <p>Überwacht und optimiert den Energiefluss in Echtzeit zwischen Solarpanelen und Fahrzeugbatterie.</p>
+        </div>
+
+        <div class="feature-card" data-index="2">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="18" y="8" width="24" height="44" rx="4" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M26 44 L34 44" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M26 20 L30 16 L34 20" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M26 28 L34 28 M26 33 L32 33" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Mobile App</h3>
+          <p>Echtzeitüberwachung von Energieproduktion, Batteriestand und gesparter CO₂-Menge direkt auf Ihrem Smartphone.</p>
+        </div>
+
+        <div class="feature-card" data-index="3">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M30 10 L38 26 L55 28 L43 40 L46 57 L30 49 L14 57 L17 40 L5 28 L22 26 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Diskretes Design</h3>
+          <p>Ultra-dünnes Profil, das das originale Erscheinungsbild Ihres Fahrzeugs vollständig erhält — kein Aufmerksamkeit erregender Aufbau.</p>
+        </div>
+
+        <div class="feature-card large right" data-index="4">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M10 50 L10 30 L20 25 L30 35 L40 15 L50 20 L50 50 Z" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Universelle Kompatibilität</h3>
+          <p>Als einzige Lösung auf dem Markt nachrüstbar auf bestehende Elektrofahrzeuge aller Marken und Modelle — ohne Neufahrzeugkauf.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── HOW IT WORKS ──────────────────────────────────────────── -->
+  <section id="how" class="how-section">
+    <div class="container">
+      <p class="section-label">Prozess</p>
+      <h2 class="reveal-text">Einfach.<br><span class="accent">In drei Schritten.</span></h2>
+      <div class="steps-wrap">
+        <div class="steps-line">
+          <div class="steps-progress" id="stepsProgress"></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Beratung &amp; Auswahl</h3>
+            <p>Unser Team analysiert Ihr Fahrzeugmodell und wählt das passende Solar Skin Konfigurationspaket. Jedes Setup wird individuell auf Ihr Fahrzeug abgestimmt.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                <path d="M25 40 C25 32 32 25 40 25 C48 25 55 32 55 40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="40" cy="50" r="3" fill="currentColor"/>
+                <path d="M40 47 L40 35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Professionelle Installation</h3>
+            <p>Zertifizierte Techniker befestigen die flexiblen Panels auf Ihrem Fahrzeugdach, schließen die Steuereinheit an und integrieren alles in das elektrische System Ihres Fahrzeugs.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <rect x="20" y="30" width="40" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="25" y="34" width="10" height="12" rx="1" stroke="currentColor" stroke-width="1"/>
+                <rect x="38" y="34" width="10" height="12" rx="1" stroke="currentColor" stroke-width="1"/>
+                <path d="M20 35 L10 35 M60 35 L70 35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M40 50 L40 60" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="40" cy="63" r="3" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Fahren &amp; Sparen</h3>
+            <p>Ab dem ersten Sonnentag produziert Ihr Fahrzeug eigene Energie. Die App zeigt Ihnen täglich wie viel Sie gespart haben und wie viel CO₂ Sie eingespart haben.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <path d="M20 55 L35 40 L45 50 L60 30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="60" cy="30" r="4" fill="currentColor"/>
+                <path d="M20 65 L60 65" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── COMPETITORS / ADVANTAGES ─────────────────────────────── -->
+  <section class="advantage-section">
+    <div class="container">
+      <p class="section-label">Markt</p>
+      <h2 class="reveal-text">Warum <span class="accent">VOLT Solar Skin</span><br>die bessere Wahl ist.</h2>
+      <div class="compare-table">
+        <div class="compare-col header-col">
+          <div class="compare-cell header-cell"></div>
+          <div class="compare-cell">Universelle Nachrüstung</div>
+          <div class="compare-cell">Kein Neufahrzeugkauf nötig</div>
+          <div class="compare-cell">Mehrere Fahrzeugmodelle</div>
+          <div class="compare-cell">Preis ab 1.500€</div>
+          <div class="compare-cell">Intelligentes App-System</div>
+          <div class="compare-cell">Ultra-dünnes Design</div>
+        </div>
+        <div class="compare-col volt-col">
+          <div class="compare-cell header-cell volt-header">Solar Skin<br><small>by VOLT</small></div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Sono Motors</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">—</div>
+          <div class="compare-cell">—</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Lightyear</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">—</div>
+          <div class="compare-cell">—</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TARGET MARKET ─────────────────────────────────────────── -->
+  <section id="market" class="market-section">
+    <div class="container">
+      <p class="section-label">Zielgruppe</p>
+      <h2 class="reveal-text">Für wen ist<br><span class="accent">Solar Skin?</span></h2>
+      <div class="market-grid">
+        <div class="market-card b2c">
+          <div class="market-badge">B2C</div>
+          <h3>Privatpersonen</h3>
+          <ul>
+            <li>Elektrofahrzeugbesitzer 25–60 Jahre</li>
+            <li>Mittleres bis hohes Einkommen</li>
+            <li>Technologie- und innovationsaffin</li>
+            <li>Umweltbewusst</li>
+            <li>Bereit €1.500–€2.500 zu investieren</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+        <div class="market-card b2b">
+          <div class="market-badge">B2B</div>
+          <h3>Unternehmen</h3>
+          <ul>
+            <li>Unternehmen mit Elektrofahrzeugflotten</li>
+            <li>Kurier-, Transport- &amp; Lieferdienste</li>
+            <li>Autovermieter</li>
+            <li>Automobilhändler &amp; -hersteller</li>
+            <li>Fokus auf Kostenreduzierung</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRICING ────────────────────────────────────────────────── -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <p class="section-label">Investition</p>
+      <h2 class="reveal-text">Transparente<br><span class="accent">Preise.</span></h2>
+      <div class="pricing-grid">
+        <div class="price-card" data-delay="0">
+          <div class="price-label">Solar Skin System</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">1.500</span>
+          </div>
+          <div class="price-desc">Einmalige Investition</div>
+          <ul class="price-features">
+            <li>Flexible Photovoltaikpanele</li>
+            <li>Intelligenter Energie-Controller</li>
+            <li>Verbindungsmodul</li>
+            <li>Mobile Monitoring-App</li>
+            <li>2 Jahre Garantie</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Anfragen</a>
+        </div>
+        <div class="price-card featured" data-delay="0.15">
+          <div class="price-popular">Empfohlen</div>
+          <div class="price-label">System + Installation</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">1.750</span>
+          </div>
+          <div class="price-desc">Inkl. zertifizierter Installation</div>
+          <ul class="price-features">
+            <li>Alles aus dem System-Paket</li>
+            <li>Professionelle Installation</li>
+            <li>Technische Inbetriebnahme</li>
+            <li>Erste Inspektion inklusive</li>
+            <li>Erweiterte Garantie 3 Jahre</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Jetzt anfragen</a>
+        </div>
+        <div class="price-card" data-delay="0.3">
+          <div class="price-label">Fleet-Paket (B2B)</div>
+          <div class="price-amount">
+            <span class="price-currency">ab </span>
+            <span class="price-num">Individuell</span>
+          </div>
+          <div class="price-desc">Mengenrabatt für Flotten</div>
+          <ul class="price-features">
+            <li>Alles aus System + Installation</li>
+            <li>Flottenmanagement-Integration</li>
+            <li>Dedizierter Ansprechpartner</li>
+            <li>Jährliche Wartung €100/Einheit</li>
+            <li>Vorrang-Support</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Angebot anfragen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ROADMAP ─────────────────────────────────────────────────── -->
+  <section class="roadmap-section">
+    <div class="container">
+      <p class="section-label">Roadmap</p>
+      <h2 class="reveal-text">Unsere<br><span class="accent">Milestones.</span></h2>
+      <div class="roadmap-timeline">
+        <div class="rm-item" data-rm="1">
+          <div class="rm-dot"></div>
+          <div class="rm-content">
+            <span class="rm-phase">Phase 1</span>
+            <h3>Prototyp &amp; Entwicklung</h3>
+            <p>Entwicklung und Test des funktionalen Solar Skin Prototyps. Sicherung der technischen Zertifizierungen und IP-Schutz durch Patentanmeldungen.</p>
+          </div>
+        </div>
+        <div class="rm-item" data-rm="2">
+          <div class="rm-dot"></div>
+          <div class="rm-content">
+            <span class="rm-phase">Phase 2</span>
+            <h3>Finanzierung &amp; Aufbau</h3>
+            <p>Sicherung von Investitionen, EU-Fördermitteln und Sponsorings. Einrichtung der Produktionsstätte und Rekrutierung von Ingenieuren, Technikern und Marketingspezialisten.</p>
+          </div>
+        </div>
+        <div class="rm-item" data-rm="3">
+          <div class="rm-dot"></div>
+          <div class="rm-content">
+            <span class="rm-phase">Phase 3</span>
+            <h3>Markteinführung</h3>
+            <p>Etablierung von Partnerschaften mit Lieferanten und Kfz-Betrieben. Launch auf nationaler Ebene durch Online-Promotion, Messen und Händlerpartnerschaften.</p>
+          </div>
+        </div>
+        <div class="rm-item" data-rm="4">
+          <div class="rm-dot"></div>
+          <div class="rm-content">
+            <span class="rm-phase">Phase 4</span>
+            <h3>Europäische Expansion</h3>
+            <p>Skalierung auf europäische Märkte. Ausbau des Partnernetzwerks mit Automobilherstellern, Händlern und Fleet-Management-Unternehmen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SUSTAINABILITY ─────────────────────────────────────────── -->
+  <section class="sustainability-section">
+    <div class="container">
+      <p class="section-label">Nachhaltigkeit</p>
+      <h2 class="reveal-text">Gut für Sie.<br><span class="accent">Gut für den Planeten.</span></h2>
+      <div class="sustain-grid">
+        <div class="sustain-card" data-delay="0">
+          <div class="sustain-icon">🌱</div>
+          <h3>Ökologisch</h3>
+          <p>Reduziert den konventionellen Energieverbrauch und CO₂-Emissionen. Verwendet recycelbare Materialien und fördert grüne Energie.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.15">
+          <div class="sustain-icon">📈</div>
+          <h3>Wirtschaftlich</h3>
+          <p>Entwickelt den Markt für grüne Technologien, schafft langfristige Gewinnmöglichkeiten und optimiert Betriebskosten durch Partnerschaften mit erneuerbarer Energie.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.3">
+          <div class="sustain-icon">🤝</div>
+          <h3>Sozial</h3>
+          <p>Schafft Arbeitsplätze für Ingenieure und IT-Spezialisten, unterstützt Innovation und ermutigt die Bevölkerung zur Nutzung ökologischer Lösungen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─────────────────────────────────────────────────── -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <p class="section-label">Kontakt</p>
+      <h2 class="reveal-text">Bereit, die Zukunft<br><span class="accent">zu fahren?</span></h2>
+      <p class="contact-sub">Kontaktieren Sie uns für eine individuelle Beratung oder ein unverbindliches Angebot.</p>
+      <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Max Mustermann" required />
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" placeholder="max@beispiel.de" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="interest">Interesse</label>
+          <select id="interest" name="interest">
+            <option value="private">Privatperson — Solar Skin nachrüsten</option>
+            <option value="fleet">Unternehmen — Flottenanfrage</option>
+            <option value="dealer">Händler / Partner</option>
+            <option value="investor">Investoren-Anfrage</option>
+            <option value="other">Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" placeholder="Beschreiben Sie kurz Ihr Anliegen…" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span class="btn-text">Nachricht senden</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <div class="form-success" id="formSuccess">
+          <span>✓</span> Ihre Nachricht wurde gesendet. Wir melden uns bald!
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ──────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#hero" class="logo">VOLT<span class="dot">.</span></a>
+          <p>Solar. Simplu. Sigur.<br>Die grüne Energiezukunft für Elektrofahrzeuge.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Produkt</h4>
+            <ul>
+              <li><a href="#product">Solar Skin</a></li>
+              <li><a href="#features">Technologie</a></li>
+              <li><a href="#how">Installation</a></li>
+              <li><a href="#pricing">Preise</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Unternehmen</h4>
+            <ul>
+              <li><a href="#market">Zielgruppe</a></li>
+              <li><a href="#problem">Mission</a></li>
+              <li><a href="#">Nachhaltigkeit</a></li>
+              <li><a href="#contact">Kontakt</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><a href="#">Impressum</a></li>
+              <li><a href="#">Datenschutz</a></li>
+              <li><a href="#">AGB</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 VOLT — Solar Skin Technology. Alle Rechte vorbehalten.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="Twitter/X">𝕏</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
