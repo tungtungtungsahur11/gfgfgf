@@ -423,9 +423,9 @@ function handleSubmit(e) {
   e.preventDefault();
   const success = document.getElementById('formSuccess');
   const btn     = e.target.querySelector('.btn-text');
-  btn.textContent = 'Wird gesendet…';
+  btn.textContent = 'Se trimite…';
   setTimeout(() => {
-    btn.textContent = 'Nachricht senden';
+    btn.textContent = 'Trimite mesajul';
     e.target.reset();
     if (success) success.classList.add('show');
     setTimeout(() => success?.classList.remove('show'), 5000);
