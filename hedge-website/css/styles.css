@@ -561,7 +561,8 @@ h2 {
   transition: transform .12s linear;
 }
 /* the gear keeps spinning to read as a mechanism */
-.xgear { transform-box: fill-box; transform-origin: center; animation: gearSpin 7s linear infinite; }
+.xgear  { transform-box: fill-box; transform-origin: center; animation: gearSpin 9s linear infinite; }
+.xgear2 { transform-box: fill-box; transform-origin: center; animation: gearSpinR 5s linear infinite; }
 .xlabel {
   fill: var(--text);
   font-family: var(--font);
@@ -575,8 +576,9 @@ h2 {
 }
 .xtrimmer.exploded .xlabel { opacity: 1; }
 
-@keyframes gearSpin { to { transform: rotate(360deg); } }
-@keyframes ringSpin { to { transform: rotate(360deg); } }
+@keyframes gearSpin  { to { transform: rotate(360deg); } }
+@keyframes gearSpinR { to { transform: rotate(-360deg); } }
+@keyframes ringSpin  { to { transform: rotate(360deg); } }
 
 /* mobile: show the exploded trimmer statically, no long pin */
 @media (max-width: 900px) {
