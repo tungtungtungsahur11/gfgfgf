@@ -10,14 +10,14 @@
 
 :root {
   --bg:        #04080a;
-  --bg-2:      #0a1410;
-  --bg-3:      #0f1c16;
-  --accent:    #6fcf4f;
-  --accent-2:  #4ea838;
+  --bg-2:      #0c0b09;
+  --bg-3:      #141009;
+  --accent:    #f0a830;
+  --accent-2:  #c07d1c;
   --text:      #e6f0e8;
   --text-dim:  #88a890;
   --border:    rgba(255,255,255,0.07);
-  --glow:      rgba(111,207,79,0.18);
+  --glow:      rgba(240,168,48,0.18);
   --font:      -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
@@ -169,9 +169,9 @@ h2 {
 .btn-primary {
   background: var(--accent);
   color: var(--bg);
-  box-shadow: 0 0 30px rgba(111,207,79,.25);
+  box-shadow: 0 0 30px rgba(240,168,48,.25);
 }
-.btn-primary:hover { box-shadow: 0 0 50px rgba(111,207,79,.4); }
+.btn-primary:hover { box-shadow: 0 0 50px rgba(240,168,48,.4); }
 
 .btn-ghost {
   background: rgba(255,255,255,.06);
@@ -341,12 +341,12 @@ h2 {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(111,207,79,.06), transparent 70%);
+  background: radial-gradient(circle at 50% 0%, rgba(240,168,48,.06), transparent 70%);
   opacity: 0;
   transition: opacity .3s;
 }
 .problem-card:hover::before { opacity: 1; }
-.problem-card:hover { border-color: rgba(111,207,79,.25); }
+.problem-card:hover { border-color: rgba(240,168,48,.25); }
 .problem-card.visible { opacity: 1; transform: none; }
 
 .problem-icon {
@@ -429,7 +429,7 @@ h2 {
 .trimmer-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 35% 55%, rgba(111,207,79,.22), transparent 65%);
+  background: radial-gradient(ellipse at 35% 55%, rgba(240,168,48,.22), transparent 65%);
   filter: blur(10px);
   animation: glowPulse 2.5s ease-in-out infinite;
   pointer-events: none;
@@ -467,7 +467,7 @@ h2 {
 .mech-section {
   min-height: 500vh;
   position: relative;
-  background: radial-gradient(ellipse at 60% 45%, #0b1c13 0%, var(--bg) 65%);
+  background: radial-gradient(ellipse at 60% 45%, #1a1206 0%, var(--bg) 65%);
 }
 .mech-sticky {
   position: sticky;
@@ -495,7 +495,7 @@ h2 {
   font-weight: 800;
   line-height: 1;
   letter-spacing: -.04em;
-  color: rgba(111,207,79,.16);
+  color: rgba(240,168,48,.16);
   transition: color .4s;
 }
 .mech-title {
@@ -513,7 +513,7 @@ h2 {
 .mech-swap { opacity: 0; transform: translateY(12px); }
 .mech-readout {
   display: flex; flex-direction: column; gap: .7rem;
-  border-left: 2px solid rgba(111,207,79,.35); padding-left: 1.1rem;
+  border-left: 2px solid rgba(240,168,48,.35); padding-left: 1.1rem;
   transition: opacity .35s var(--ease-out);
 }
 .mech-readout div { display: flex; justify-content: space-between; max-width: 280px; align-items: baseline; }
@@ -535,7 +535,7 @@ h2 {
   width: 240px; height: 240px;
   margin: -120px 0 0 -120px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(180,255,150,.95), rgba(111,207,79,.45) 35%, rgba(111,207,79,.08) 60%, transparent 72%);
+  background: radial-gradient(circle, rgba(255,224,150,.95), rgba(240,168,48,.45) 35%, rgba(240,168,48,.08) 60%, transparent 72%);
   filter: blur(4px);
   opacity: .35;
   transform: scale(.6);
@@ -546,8 +546,8 @@ h2 {
   position: absolute; left: 50%; top: 50%;
   width: 420px; height: 420px; margin: -210px 0 0 -210px;
   border-radius: 50%;
-  border: 1px solid rgba(111,207,79,.08);
-  box-shadow: 0 0 0 60px rgba(111,207,79,.03) inset;
+  border: 1px solid rgba(240,168,48,.08);
+  box-shadow: 0 0 0 60px rgba(240,168,48,.03) inset;
   animation: ringSpin 40s linear infinite;
   pointer-events: none;
 }
@@ -560,11 +560,11 @@ h2 {
   transition: opacity .3s;
   z-index: 2;
 }
-.gear { width: 120px; height: 120px; display: block; filter: drop-shadow(0 0 14px rgba(111,207,79,.6)); }
+.gear { width: 120px; height: 120px; display: block; filter: drop-shadow(0 0 14px rgba(240,168,48,.6)); }
 .gear circle { opacity: .25; }
 .gear-a {
   background:
-    conic-gradient(from 0deg, transparent 0 8deg, rgba(111,207,79,.9) 8deg 16deg, transparent 16deg 30deg) ;
+    conic-gradient(from 0deg, transparent 0 8deg, rgba(240,168,48,.9) 8deg 16deg, transparent 16deg 30deg) ;
   -webkit-mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
           mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
   border-radius: 50%;
@@ -586,9 +586,9 @@ h2 {
   margin-left: calc(var(--w, 180px) / -2);
   margin-top: calc(var(--w, 180px) / -2);
   border-radius: 50%;
-  border: 2px solid rgba(111,207,79,.55);
-  background: radial-gradient(circle, rgba(111,207,79,.10), rgba(111,207,79,.02) 60%, transparent 72%);
-  box-shadow: 0 0 22px rgba(111,207,79,.22), inset 0 0 26px rgba(111,207,79,.12);
+  border: 2px solid rgba(240,168,48,.55);
+  background: radial-gradient(circle, rgba(240,168,48,.10), rgba(240,168,48,.02) 60%, transparent 72%);
+  box-shadow: 0 0 22px rgba(240,168,48,.22), inset 0 0 26px rgba(240,168,48,.12);
   transform: translateZ(0px);
   transition: transform .15s linear, opacity .3s, border-color .3s, box-shadow .3s;
 }
@@ -596,11 +596,11 @@ h2 {
   content: '';
   position: absolute; inset: 30%;
   border-radius: 50%;
-  border: 1px solid rgba(111,207,79,.3);
+  border: 1px solid rgba(240,168,48,.3);
 }
 .disc.active {
   border-color: var(--accent);
-  box-shadow: 0 0 34px rgba(111,207,79,.5), inset 0 0 30px rgba(111,207,79,.25);
+  box-shadow: 0 0 34px rgba(240,168,48,.5), inset 0 0 30px rgba(240,168,48,.25);
 }
 .disc-tag {
   position: absolute;
@@ -613,7 +613,7 @@ h2 {
   letter-spacing: .02em;
   color: var(--text);
   background: rgba(8,16,11,.7);
-  border: 1px solid rgba(111,207,79,.25);
+  border: 1px solid rgba(240,168,48,.25);
   border-radius: 6px;
   padding: .25rem .6rem;
   opacity: 0;
@@ -687,12 +687,12 @@ h2 {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(111,207,79,.06), transparent 60%);
+  background: radial-gradient(circle at 20% 20%, rgba(240,168,48,.06), transparent 60%);
   opacity: 0;
   transition: opacity .3s;
 }
 .feature-card:hover::before { opacity: 1; }
-.feature-card:hover { border-color: rgba(111,207,79,.2); }
+.feature-card:hover { border-color: rgba(240,168,48,.2); }
 .feature-card.visible { opacity: 1; transform: none; }
 
 .feature-card.large { grid-column: span 2; display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; }
@@ -705,10 +705,10 @@ h2 {
   width: 64px;
   height: 64px;
   color: var(--accent);
-  background: rgba(111,207,79,.08);
+  background: rgba(240,168,48,.08);
   border-radius: 16px;
   padding: 12px;
-  border: 1px solid rgba(111,207,79,.15);
+  border: 1px solid rgba(240,168,48,.15);
 }
 .feature-card.large .feature-icon-svg { width: 80px; height: 80px; }
 
@@ -742,7 +742,7 @@ h2 {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 0%;
-  background: linear-gradient(to bottom, var(--accent), rgba(111,207,79,.3));
+  background: linear-gradient(to bottom, var(--accent), rgba(240,168,48,.3));
   border-radius: 99px;
   transition: height .3s;
 }
@@ -761,13 +761,13 @@ h2 {
 .step-num {
   font-size: 4.5rem;
   font-weight: 800;
-  color: rgba(111,207,79,.12);
+  color: rgba(240,168,48,.12);
   line-height: 1;
   letter-spacing: -.04em;
   min-width: 80px;
   transition: color .3s;
 }
-.step.visible .step-num { color: rgba(111,207,79,.3); }
+.step.visible .step-num { color: rgba(240,168,48,.3); }
 
 .step-content h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: .8rem; }
 .step-content p { font-size: .95rem; color: var(--text-dim); line-height: 1.7; }
@@ -784,8 +784,8 @@ h2 {
   transition: border-color .3s, box-shadow .3s;
 }
 .step.visible .step-icon-wrap {
-  border-color: rgba(111,207,79,.3);
-  box-shadow: 0 0 20px rgba(111,207,79,.08);
+  border-color: rgba(240,168,48,.3);
+  box-shadow: 0 0 20px rgba(240,168,48,.08);
 }
 
 /* ─── ADVANTAGE / COMPARE ───────────────────────────────────────── */
@@ -831,9 +831,9 @@ h2 {
 }
 .header-cell small { font-size: .68rem; color: var(--text-dim); font-weight: 400; letter-spacing: 0; text-transform: none; }
 
-.volt-col .compare-cell { background: rgba(111,207,79,.04); font-weight: 600; color: var(--accent); }
-.volt-header { background: rgba(111,207,79,.1) !important; color: var(--accent) !important; border-right: 1px solid rgba(111,207,79,.2); border-left: 1px solid rgba(111,207,79,.2); }
-.volt-col .compare-cell:not(.header-cell) { border-right: 1px solid rgba(111,207,79,.1); border-left: 1px solid rgba(111,207,79,.1); }
+.volt-col .compare-cell { background: rgba(240,168,48,.04); font-weight: 600; color: var(--accent); }
+.volt-header { background: rgba(240,168,48,.1) !important; color: var(--accent) !important; border-right: 1px solid rgba(240,168,48,.2); border-left: 1px solid rgba(240,168,48,.2); }
+.volt-col .compare-cell:not(.header-cell) { border-right: 1px solid rgba(240,168,48,.1); border-left: 1px solid rgba(240,168,48,.1); }
 
 /* ─── MARKET ────────────────────────────────────────────────────── */
 .market-section {
@@ -888,7 +888,7 @@ h2 {
   position: absolute;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, rgba(111,207,79,.12), transparent);
+  background: radial-gradient(circle, rgba(240,168,48,.12), transparent);
   bottom: -60px;
   right: -60px;
   border-radius: 50%;
@@ -921,12 +921,12 @@ h2 {
   transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
 }
 .price-card.visible { opacity: 1; transform: none; }
-.price-card:hover { border-color: rgba(111,207,79,.25); }
+.price-card:hover { border-color: rgba(240,168,48,.25); }
 
 .price-card.featured {
   background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
-  border-color: rgba(111,207,79,.3);
-  box-shadow: 0 0 60px rgba(111,207,79,.1);
+  border-color: rgba(240,168,48,.3);
+  box-shadow: 0 0 60px rgba(240,168,48,.1);
 }
 
 .price-popular {
@@ -1024,7 +1024,7 @@ h2 {
   transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
 }
 .sustain-card.visible { opacity: 1; transform: none; }
-.sustain-card:hover { border-color: rgba(111,207,79,.2); }
+.sustain-card:hover { border-color: rgba(240,168,48,.2); }
 .sustain-icon { font-size: 3rem; margin-bottom: 1.2rem; }
 .sustain-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: .8rem; }
 .sustain-card p { font-size: .9rem; color: var(--text-dim); line-height: 1.65; }
@@ -1074,13 +1074,13 @@ h2 {
 .form-group select:focus,
 .form-group textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(111,207,79,.12);
+  box-shadow: 0 0 0 3px rgba(240,168,48,.12);
 }
 
 .form-success {
   display: none;
-  background: rgba(111,207,79,.1);
-  border: 1px solid rgba(111,207,79,.3);
+  background: rgba(240,168,48,.1);
+  border: 1px solid rgba(240,168,48,.3);
   border-radius: 12px;
   padding: 1rem 1.3rem;
   color: var(--accent);
@@ -1346,25 +1346,25 @@ h2 {
           <div class="trimmer">
             <svg class="trimmer-svg" viewBox="0 0 440 200" fill="none" xmlns="http://www.w3.org/2000/svg">
               <!-- Akku -->
-              <rect x="300" y="118" width="74" height="46" rx="8" fill="#16261c" stroke="#2a3f30" stroke-width="2"/>
-              <rect x="312" y="128" width="6" height="14" rx="2" fill="#6fcf4f"/>
-              <rect x="322" y="128" width="6" height="14" rx="2" fill="#6fcf4f"/>
-              <rect x="332" y="128" width="6" height="14" rx="2" fill="#4ea838"/>
+              <rect x="300" y="118" width="74" height="46" rx="8" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+              <rect x="312" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="322" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="332" y="128" width="6" height="14" rx="2" fill="#c07d1c"/>
               <!-- Motorgehäuse -->
               <path d="M250 70 Q252 56 268 56 L330 56 Q352 56 352 84 L352 124 Q352 140 332 140 L268 140 Q250 140 250 122 Z"
-                    fill="url(#bodyGrad)" stroke="#2a3f30" stroke-width="2"/>
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
               <!-- Lüftungsschlitze -->
-              <path d="M276 74 L276 92 M286 74 L286 92 M296 74 L296 92 M306 74 L306 92" stroke="#0f1c16" stroke-width="2" stroke-linecap="round"/>
+              <path d="M276 74 L276 92 M286 74 L286 92 M296 74 L296 92 M306 74 L306 92" stroke="#141009" stroke-width="2" stroke-linecap="round"/>
               <!-- Griff -->
               <path d="M300 56 Q320 18 358 30 Q392 42 372 90 L356 86 Q368 54 350 48 Q328 42 318 64 Z"
-                    fill="url(#bodyGrad)" stroke="#2a3f30" stroke-width="2"/>
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
               <!-- Schalter -->
-              <rect x="262" y="96" width="26" height="10" rx="5" fill="#6fcf4f"/>
+              <rect x="262" y="96" width="26" height="10" rx="5" fill="#f0a830"/>
               <!-- Frontschutz -->
-              <path d="M250 96 L236 78 L236 118 Z" fill="#16261c" stroke="#2a3f30" stroke-width="2"/>
+              <path d="M250 96 L236 78 L236 118 Z" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
 
               <!-- BLADE BASE -->
-              <rect x="20" y="92" width="232" height="14" rx="6" fill="#1b2b22" stroke="#2a3f30" stroke-width="1.5"/>
+              <rect x="20" y="92" width="232" height="14" rx="6" fill="#251d10" stroke="#3d3019" stroke-width="1.5"/>
 
               <!-- BOTTOM BLADE LAYER -->
               <g class="blade-layer blade-bottom" fill="#c9d6cd" stroke="#9fb0a6" stroke-width="1">
@@ -1391,8 +1391,8 @@ h2 {
 
               <defs>
                 <linearGradient id="bodyGrad" x1="250" y1="56" x2="352" y2="140" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#23362a"/>
-                  <stop offset="1" stop-color="#13201a"/>
+                  <stop stop-color="#33291a"/>
+                  <stop offset="1" stop-color="#181208"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -1430,7 +1430,7 @@ h2 {
 
         <!-- rotating gears (visible during ROTATION stage) -->
         <div class="mech-gears" id="mechGears">
-          <svg class="gear gear-a" viewBox="0 0 100 100"><path d="M50 8l5 0 3 9 9 3 0 5 0 5-9 3-3 9-5 0-5 0-3-9-9-3 0-5 0-5 9-3 3-9 5 0z" fill="none"/><g fill="#6fcf4f"><circle cx="50" cy="50" r="30"/></g></svg>
+          <svg class="gear gear-a" viewBox="0 0 100 100"><path d="M50 8l5 0 3 9 9 3 0 5 0 5-9 3-3 9-5 0-5 0-3-9-9-3 0-5 0-5 9-3 3-9 5 0z" fill="none"/><g fill="#f0a830"><circle cx="50" cy="50" r="30"/></g></svg>
         </div>
 
         <!-- exploded disc stack -->
@@ -1513,7 +1513,7 @@ h2 {
                 <rect x="20" y="10" width="20" height="40" rx="4" stroke="currentColor" stroke-width="1.5"/>
                 <rect x="25" y="6" width="10" height="5" rx="2" stroke="currentColor" stroke-width="1.5"/>
                 <path d="M25 20 L35 20 M25 26 L35 26 M25 32 L35 32" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-                <path d="M30 38 L30 44" stroke="#6fcf4f" stroke-width="2" stroke-linecap="round"/>
+                <path d="M30 38 L30 44" stroke="#f0a830" stroke-width="2" stroke-linecap="round"/>
               </svg>
             </div>
           </div>
@@ -1934,7 +1934,7 @@ h2 {
       x: Math.random() * W,
       y: Math.random() * H,
       r: Math.random() * 5 + 2,
-      color: Math.random() > .5 ? '#6fcf4f' : '#4ea838',
+      color: Math.random() > .5 ? '#f0a830' : '#c07d1c',
       speedY: Math.random() * .5 + .2,
       sway: Math.random() * Math.PI * 2,
       swaySpeed: Math.random() * .02 + .01,
@@ -1947,8 +1947,8 @@ h2 {
 
     /* deep background gradient */
     const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .85);
-    bg.addColorStop(0,  'rgba(10,28,18,.95)');
-    bg.addColorStop(.5, 'rgba(6,16,11,.97)');
+    bg.addColorStop(0,  'rgba(20,15,6,.95)');
+    bg.addColorStop(.5, 'rgba(12,9,5,.97)');
     bg.addColorStop(1,  'rgba(4,8,10,1)');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
@@ -1956,8 +1956,8 @@ h2 {
     /* central green glow */
     const glowR = 120 + Math.sin(t * .001) * 14;
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR * 2.4);
-    glow.addColorStop(0,  'rgba(111,207,79,.20)');
-    glow.addColorStop(.4, 'rgba(111,207,79,.06)');
+    glow.addColorStop(0,  'rgba(240,168,48,.20)');
+    glow.addColorStop(.4, 'rgba(240,168,48,.06)');
     glow.addColorStop(1,  'transparent');
     ctx.beginPath();
     ctx.arc(cx, cy, glowR * 2.4, 0, Math.PI * 2);
@@ -1967,11 +1967,11 @@ h2 {
     /* faint rings */
     ctx.beginPath();
     ctx.arc(cx, cy, 150 + Math.sin(t * .0008) * 10, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(111,207,79,.06)';
+    ctx.strokeStyle = 'rgba(240,168,48,.06)';
     ctx.lineWidth = 1; ctx.stroke();
     ctx.beginPath();
     ctx.arc(cx, cy, 230 + Math.cos(t * .0006) * 12, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(111,207,79,.04)';
+    ctx.strokeStyle = 'rgba(240,168,48,.04)';
     ctx.lineWidth = 1; ctx.stroke();
 
     /* pollen */
@@ -1983,7 +1983,7 @@ h2 {
       if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,230,200,${p.a * .6})`;
+      ctx.fillStyle = `rgba(235,222,190,${p.a * .6})`;
       ctx.fill();
     });
 
@@ -2015,7 +2015,7 @@ function spawnLeaf() {
   const container = document.getElementById('leafParticles');
   if (!container) return;
   const p = document.createElement('span');
-  const green = Math.random() > .5 ? '#6fcf4f' : '#4ea838';
+  const green = Math.random() > .5 ? '#f0a830' : '#c07d1c';
   p.style.cssText = `
     position:absolute;
     width:7px;height:4px;border-radius:60% 60% 60% 0;
@@ -2177,7 +2177,7 @@ ScrollTrigger.create({
       titleEl.textContent = st.title;
       subEl.textContent   = st.sub;
       readEl.innerHTML    = st.read.map(r => `<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
-      idxEl.style.color   = 'rgba(111,207,79,' + (0.16 + s * 0.12) + ')';
+      idxEl.style.color   = 'rgba(240,168,48,' + (0.16 + s * 0.12) + ')';
       [titleEl, subEl, readEl].forEach(el => el.classList.remove('mech-swap'));
     }, 180);
   }
@@ -2299,13 +2299,13 @@ document.querySelectorAll('.spec-dot').forEach((dot, i) => {
     trigger: dot, start: 'top 80%', once: true,
     onEnter() {
       setTimeout(() => {
-        dot.style.boxShadow = '0 0 20px rgba(111,207,79,.8), 0 0 40px rgba(111,207,79,.3)';
+        dot.style.boxShadow = '0 0 20px rgba(240,168,48,.8), 0 0 40px rgba(240,168,48,.3)';
       }, i * 180);
     }
   });
 });
 
-console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#6fcf4f;font-weight:800;font-size:18px;');
+console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight:800;font-size:18px;');
 
 </script>
 </body>

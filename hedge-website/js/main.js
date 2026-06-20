@@ -31,7 +31,7 @@
       x: Math.random() * W,
       y: Math.random() * H,
       r: Math.random() * 5 + 2,
-      color: Math.random() > .5 ? '#6fcf4f' : '#4ea838',
+      color: Math.random() > .5 ? '#f0a830' : '#c07d1c',
       speedY: Math.random() * .5 + .2,
       sway: Math.random() * Math.PI * 2,
       swaySpeed: Math.random() * .02 + .01,
@@ -44,8 +44,8 @@
 
     /* deep background gradient */
     const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .85);
-    bg.addColorStop(0,  'rgba(10,28,18,.95)');
-    bg.addColorStop(.5, 'rgba(6,16,11,.97)');
+    bg.addColorStop(0,  'rgba(20,15,6,.95)');
+    bg.addColorStop(.5, 'rgba(12,9,5,.97)');
     bg.addColorStop(1,  'rgba(4,8,10,1)');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
@@ -53,8 +53,8 @@
     /* central green glow */
     const glowR = 120 + Math.sin(t * .001) * 14;
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR * 2.4);
-    glow.addColorStop(0,  'rgba(111,207,79,.20)');
-    glow.addColorStop(.4, 'rgba(111,207,79,.06)');
+    glow.addColorStop(0,  'rgba(240,168,48,.20)');
+    glow.addColorStop(.4, 'rgba(240,168,48,.06)');
     glow.addColorStop(1,  'transparent');
     ctx.beginPath();
     ctx.arc(cx, cy, glowR * 2.4, 0, Math.PI * 2);
@@ -64,11 +64,11 @@
     /* faint rings */
     ctx.beginPath();
     ctx.arc(cx, cy, 150 + Math.sin(t * .0008) * 10, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(111,207,79,.06)';
+    ctx.strokeStyle = 'rgba(240,168,48,.06)';
     ctx.lineWidth = 1; ctx.stroke();
     ctx.beginPath();
     ctx.arc(cx, cy, 230 + Math.cos(t * .0006) * 12, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(111,207,79,.04)';
+    ctx.strokeStyle = 'rgba(240,168,48,.04)';
     ctx.lineWidth = 1; ctx.stroke();
 
     /* pollen */
@@ -80,7 +80,7 @@
       if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,230,200,${p.a * .6})`;
+      ctx.fillStyle = `rgba(235,222,190,${p.a * .6})`;
       ctx.fill();
     });
 
@@ -112,7 +112,7 @@ function spawnLeaf() {
   const container = document.getElementById('leafParticles');
   if (!container) return;
   const p = document.createElement('span');
-  const green = Math.random() > .5 ? '#6fcf4f' : '#4ea838';
+  const green = Math.random() > .5 ? '#f0a830' : '#c07d1c';
   p.style.cssText = `
     position:absolute;
     width:7px;height:4px;border-radius:60% 60% 60% 0;
@@ -274,7 +274,7 @@ ScrollTrigger.create({
       titleEl.textContent = st.title;
       subEl.textContent   = st.sub;
       readEl.innerHTML    = st.read.map(r => `<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
-      idxEl.style.color   = 'rgba(111,207,79,' + (0.16 + s * 0.12) + ')';
+      idxEl.style.color   = 'rgba(240,168,48,' + (0.16 + s * 0.12) + ')';
       [titleEl, subEl, readEl].forEach(el => el.classList.remove('mech-swap'));
     }, 180);
   }
@@ -396,10 +396,10 @@ document.querySelectorAll('.spec-dot').forEach((dot, i) => {
     trigger: dot, start: 'top 80%', once: true,
     onEnter() {
       setTimeout(() => {
-        dot.style.boxShadow = '0 0 20px rgba(111,207,79,.8), 0 0 40px rgba(111,207,79,.3)';
+        dot.style.boxShadow = '0 0 20px rgba(240,168,48,.8), 0 0 40px rgba(240,168,48,.3)';
       }, i * 180);
     }
   });
 });
 
-console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#6fcf4f;font-weight:800;font-size:18px;');
+console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight:800;font-size:18px;');
