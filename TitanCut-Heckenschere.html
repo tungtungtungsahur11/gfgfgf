@@ -552,85 +552,45 @@ h2 {
   pointer-events: none;
 }
 
-/* rotating gears */
-.mech-gears {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity .3s;
-  z-index: 2;
-}
-.gear { width: 120px; height: 120px; display: block; filter: drop-shadow(0 0 14px rgba(240,168,48,.6)); }
-.gear circle { opacity: .25; }
-.gear-a {
-  background:
-    conic-gradient(from 0deg, transparent 0 8deg, rgba(240,168,48,.9) 8deg 16deg, transparent 16deg 30deg) ;
-  -webkit-mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
-          mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
-  border-radius: 50%;
-  animation: gearSpin 6s linear infinite;
-}
-
-/* exploded disc stack */
-.mech-discs {
+/* the actual hedge trimmer that explodes into parts */
+.xtrimmer {
   position: relative;
-  width: 260px; height: 260px;
-  transform: rotateX(58deg) rotateZ(0deg);
-  transform-style: preserve-3d;
-  z-index: 1;
+  z-index: 2;
+  width: 115%;
+  max-width: 560px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.5));
 }
-.disc {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: var(--w, 180px); height: var(--w, 180px);
-  margin-left: calc(var(--w, 180px) / -2);
-  margin-top: calc(var(--w, 180px) / -2);
-  border-radius: 50%;
-  border: 2px solid rgba(240,168,48,.55);
-  background: radial-gradient(circle, rgba(240,168,48,.10), rgba(240,168,48,.02) 60%, transparent 72%);
-  box-shadow: 0 0 22px rgba(240,168,48,.22), inset 0 0 26px rgba(240,168,48,.12);
-  transform: translateZ(0px);
-  transition: transform .15s linear, opacity .3s, border-color .3s, box-shadow .3s;
+.xpart {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .12s linear;
 }
-.disc::after {
-  content: '';
-  position: absolute; inset: 30%;
-  border-radius: 50%;
-  border: 1px solid rgba(240,168,48,.3);
-}
-.disc.active {
-  border-color: var(--accent);
-  box-shadow: 0 0 34px rgba(240,168,48,.5), inset 0 0 30px rgba(240,168,48,.25);
-}
-.disc-tag {
-  position: absolute;
-  left: calc(100% + 14px); top: 50%;
-  transform: translateY(-50%) rotateX(-58deg);
-  transform-origin: left center;
-  white-space: nowrap;
-  font-size: .8rem;
-  font-weight: 600;
-  letter-spacing: .02em;
-  color: var(--text);
-  background: rgba(8,16,11,.7);
-  border: 1px solid rgba(240,168,48,.25);
-  border-radius: 6px;
-  padding: .25rem .6rem;
+/* the gear keeps spinning to read as a mechanism */
+.xgear { transform-box: fill-box; transform-origin: center; animation: gearSpin 7s linear infinite; }
+.xlabel {
+  fill: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
   opacity: 0;
-  transition: opacity .3s;
-  pointer-events: none;
+  transition: opacity .35s var(--ease-out);
+  paint-order: stroke;
+  stroke: rgba(8,8,6,.85);
+  stroke-width: 3px;
 }
-.disc.labelled .disc-tag { opacity: 1; }
+.xtrimmer.exploded .xlabel { opacity: 1; }
 
 @keyframes gearSpin { to { transform: rotate(360deg); } }
 @keyframes ringSpin { to { transform: rotate(360deg); } }
 
-/* mobile: collapse the pinned explode into a simple labelled stack */
+/* mobile: show the exploded trimmer statically, no long pin */
 @media (max-width: 900px) {
   .mech-section { min-height: 0; }
   .mech-sticky { position: relative; height: auto; grid-template-columns: 1fr; padding: 5rem 2rem; gap: 3rem; }
   .mech-stage { height: 360px; }
-  .mech-discs { transform: rotateX(58deg); }
+  .xtrimmer { width: 100%; }
 }
 
 /* ─── STATS ─────────────────────────────────────────────────────── */
@@ -1423,25 +1383,81 @@ h2 {
         </div>
       </div>
 
-      <!-- right: glowing exploding mechanism -->
+      <!-- right: the actual hedge trimmer exploding into labelled parts -->
       <div class="mech-stage">
         <div class="mech-core" id="mechCore"></div>
         <div class="mech-rings"></div>
 
-        <!-- rotating gears (visible during ROTATION stage) -->
-        <div class="mech-gears" id="mechGears">
-          <svg class="gear gear-a" viewBox="0 0 100 100"><path d="M50 8l5 0 3 9 9 3 0 5 0 5-9 3-3 9-5 0-5 0-3-9-9-3 0-5 0-5 9-3 3-9 5 0z" fill="none"/><g fill="#f0a830"><circle cx="50" cy="50" r="30"/></g></svg>
-        </div>
+        <svg class="xtrimmer" id="xtrimmer" viewBox="0 0 440 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- MESSER (Schneidwerk) -->
+          <g class="xpart" data-dx="-78" data-dy="34">
+            <rect x="20" y="122" width="232" height="14" rx="6" fill="#241c10" stroke="#3d3019" stroke-width="1.5"/>
+            <g fill="#d8c6a0" stroke="#b09a66" stroke-width="1">
+              <path d="M28 134 l10 -14 l10 14 Z"/><path d="M58 134 l10 -14 l10 14 Z"/>
+              <path d="M88 134 l10 -14 l10 14 Z"/><path d="M118 134 l10 -14 l10 14 Z"/>
+              <path d="M148 134 l10 -14 l10 14 Z"/><path d="M178 134 l10 -14 l10 14 Z"/>
+              <path d="M208 134 l10 -14 l10 14 Z"/>
+            </g>
+            <g fill="#f3e8cf" stroke="#cbb98e" stroke-width="1">
+              <path d="M40 124 l10 14 l10 -14 Z"/><path d="M70 124 l10 14 l10 -14 Z"/>
+              <path d="M100 124 l10 14 l10 -14 Z"/><path d="M130 124 l10 14 l10 -14 Z"/>
+              <path d="M160 124 l10 14 l10 -14 Z"/><path d="M190 124 l10 14 l10 -14 Z"/>
+              <path d="M220 124 l10 14 l10 -14 Z"/>
+            </g>
+            <path d="M20 129 L8 129 L12 122 L20 122 Z" fill="#d8c6a0"/>
+            <text class="xlabel" x="60" y="158">① Messer</text>
+          </g>
 
-        <!-- exploded disc stack -->
-        <div class="mech-discs" id="mechDiscs">
-          <div class="disc" data-layer="0" style="--w:120px"><span class="disc-tag">Messer</span></div>
-          <div class="disc" data-layer="1" style="--w:170px"><span class="disc-tag">Messerbalken</span></div>
-          <div class="disc" data-layer="2" style="--w:140px"><span class="disc-tag">Exzenter</span></div>
-          <div class="disc" data-layer="3" style="--w:200px"><span class="disc-tag">Getriebe</span></div>
-          <div class="disc" data-layer="4" style="--w:230px"><span class="disc-tag">Motor</span></div>
-          <div class="disc" data-layer="5" style="--w:180px"><span class="disc-tag">Akku</span></div>
-        </div>
+          <!-- HANDSCHUTZ -->
+          <g class="xpart" data-dx="-18" data-dy="-58">
+            <path d="M250 126 L236 108 L236 148 Z" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+            <text class="xlabel" x="214" y="104">② Handschutz</text>
+          </g>
+
+          <!-- GETRIEBE (Zahnrad) -->
+          <g class="xpart" data-dx="2" data-dy="78">
+            <g class="xgear">
+              <circle cx="250" cy="129" r="14" fill="#241c10" stroke="#3d3019" stroke-width="2"/>
+              <path d="M250 113 L250 117 M250 141 L250 145 M234 129 L238 129 M262 129 L266 129 M239 118 L241 120 M259 138 L261 140 M261 118 L259 120 M241 138 L239 140"
+                    stroke="#c9b384" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="250" cy="129" r="4.5" fill="#f0a830"/>
+            </g>
+            <text class="xlabel" x="236" y="172">③ Getriebe</text>
+          </g>
+
+          <!-- MOTOR -->
+          <g class="xpart" data-dx="34" data-dy="-6">
+            <path d="M250 100 Q252 86 268 86 L330 86 Q352 86 352 114 L352 154 Q352 170 332 170 L268 170 Q250 170 250 152 Z"
+                  fill="url(#bodyGradX)" stroke="#3d3019" stroke-width="2"/>
+            <path d="M276 104 L276 122 M286 104 L286 122 M296 104 L296 122 M306 104 L306 122" stroke="#141009" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="300" cy="130" r="13" fill="none" stroke="#f0a830" stroke-width="2" opacity="0.7"/>
+            <text class="xlabel" x="286" y="190">④ Motor</text>
+          </g>
+
+          <!-- GRIFF & SCHALTER -->
+          <g class="xpart" data-dx="48" data-dy="-50">
+            <path d="M300 86 Q320 48 358 60 Q392 72 372 120 L356 116 Q368 84 350 78 Q328 72 318 94 Z"
+                  fill="url(#bodyGradX)" stroke="#3d3019" stroke-width="2"/>
+            <rect x="262" y="126" width="26" height="10" rx="5" fill="#f0a830"/>
+            <text class="xlabel" x="356" y="64">⑤ Griff</text>
+          </g>
+
+          <!-- AKKU -->
+          <g class="xpart" data-dx="74" data-dy="72">
+            <rect x="300" y="148" width="74" height="46" rx="8" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+            <rect x="312" y="158" width="6" height="14" rx="2" fill="#f0a830"/>
+            <rect x="322" y="158" width="6" height="14" rx="2" fill="#f0a830"/>
+            <rect x="332" y="158" width="6" height="14" rx="2" fill="#c07d1c"/>
+            <text class="xlabel" x="312" y="210">⑥ Akku</text>
+          </g>
+
+          <defs>
+            <linearGradient id="bodyGradX" x1="250" y1="86" x2="352" y2="170" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#33291a"/>
+              <stop offset="1" stop-color="#181208"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
     </div>
   </section>
@@ -2147,14 +2163,13 @@ ScrollTrigger.create({
   const section = document.querySelector('.mech-section');
   if (!section) return;
 
-  const discs   = gsap.utils.toArray('.disc');
+  const svg     = document.getElementById('xtrimmer');
+  const parts   = gsap.utils.toArray('.xpart');
   const core    = document.getElementById('mechCore');
-  const gears   = document.getElementById('mechGears');
   const idxEl   = document.getElementById('mechIndex');
   const titleEl = document.getElementById('mechTitle');
   const subEl   = document.getElementById('mechSub');
   const readEl  = document.getElementById('mechReadout');
-  const N = discs.length;
 
   // three narrative stages, like the watch page
   const stages = [
@@ -2183,25 +2198,21 @@ ScrollTrigger.create({
   }
 
   function render(p) {
-    // p: 0..1 over the whole pinned section
-    // gears most visible in the middle (rotation) stage
-    const gearVis = Math.max(0, 1 - Math.abs(p - 0.45) / 0.30);
-    gears.style.opacity = gearVis.toFixed(3);
+    // p: 0..1 over the whole pinned section.
+    // Stay assembled (recognisable trimmer) through stage 1-2, then explode.
+    const explode = Math.max(0, Math.min(1, (p - 0.40) / 0.60)); // 0..1
+    const eased   = explode * explode * (3 - 2 * explode);        // smoothstep
 
-    // explosion ramps up in the last third
-    const explode = Math.max(0, (p - 0.45) / 0.55); // 0..1
-    const spread  = explode * 150;                  // px between layers
-    const mid     = (N - 1) / 2;
-    discs.forEach((d, i) => {
-      const z = (i - mid) * spread;
-      d.style.transform = `translateZ(${z}px)`;
-      d.classList.toggle('labelled', explode > 0.25);
-      d.classList.toggle('active', explode > 0.25 && Math.round(p * (N - 1)) === i);
+    parts.forEach(g => {
+      const dx = (+g.dataset.dx || 0) * eased;
+      const dy = (+g.dataset.dy || 0) * eased;
+      g.style.transform = `translate(${dx}px, ${dy}px)`;
     });
+    svg.classList.toggle('exploded', explode > 0.15);
 
-    // glowing core grows with the whole sequence
-    core.style.opacity = (0.35 + p * 0.55).toFixed(3);
-    core.style.transform = `scale(${(0.6 + p * 1.1).toFixed(3)})`;
+    // glowing core grows with the sequence
+    core.style.opacity = (0.30 + p * 0.5).toFixed(3);
+    core.style.transform = `scale(${(0.6 + p * 1.0).toFixed(3)})`;
 
     setStage(p < 0.34 ? 0 : p < 0.67 ? 1 : 2);
   }

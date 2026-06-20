@@ -244,14 +244,13 @@ ScrollTrigger.create({
   const section = document.querySelector('.mech-section');
   if (!section) return;
 
-  const discs   = gsap.utils.toArray('.disc');
+  const svg     = document.getElementById('xtrimmer');
+  const parts   = gsap.utils.toArray('.xpart');
   const core    = document.getElementById('mechCore');
-  const gears   = document.getElementById('mechGears');
   const idxEl   = document.getElementById('mechIndex');
   const titleEl = document.getElementById('mechTitle');
   const subEl   = document.getElementById('mechSub');
   const readEl  = document.getElementById('mechReadout');
-  const N = discs.length;
 
   // three narrative stages, like the watch page
   const stages = [
@@ -280,25 +279,21 @@ ScrollTrigger.create({
   }
 
   function render(p) {
-    // p: 0..1 over the whole pinned section
-    // gears most visible in the middle (rotation) stage
-    const gearVis = Math.max(0, 1 - Math.abs(p - 0.45) / 0.30);
-    gears.style.opacity = gearVis.toFixed(3);
+    // p: 0..1 over the whole pinned section.
+    // Stay assembled (recognisable trimmer) through stage 1-2, then explode.
+    const explode = Math.max(0, Math.min(1, (p - 0.40) / 0.60)); // 0..1
+    const eased   = explode * explode * (3 - 2 * explode);        // smoothstep
 
-    // explosion ramps up in the last third
-    const explode = Math.max(0, (p - 0.45) / 0.55); // 0..1
-    const spread  = explode * 150;                  // px between layers
-    const mid     = (N - 1) / 2;
-    discs.forEach((d, i) => {
-      const z = (i - mid) * spread;
-      d.style.transform = `translateZ(${z}px)`;
-      d.classList.toggle('labelled', explode > 0.25);
-      d.classList.toggle('active', explode > 0.25 && Math.round(p * (N - 1)) === i);
+    parts.forEach(g => {
+      const dx = (+g.dataset.dx || 0) * eased;
+      const dy = (+g.dataset.dy || 0) * eased;
+      g.style.transform = `translate(${dx}px, ${dy}px)`;
     });
+    svg.classList.toggle('exploded', explode > 0.15);
 
-    // glowing core grows with the whole sequence
-    core.style.opacity = (0.35 + p * 0.55).toFixed(3);
-    core.style.transform = `scale(${(0.6 + p * 1.1).toFixed(3)})`;
+    // glowing core grows with the sequence
+    core.style.opacity = (0.30 + p * 0.5).toFixed(3);
+    core.style.transform = `scale(${(0.6 + p * 1.0).toFixed(3)})`;
 
     setStage(p < 0.34 ? 0 : p < 0.67 ? 1 : 2);
   }

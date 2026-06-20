@@ -217,25 +217,81 @@
         </div>
       </div>
 
-      <!-- right: glowing exploding mechanism -->
+      <!-- right: the actual hedge trimmer exploding into labelled parts -->
       <div class="mech-stage">
         <div class="mech-core" id="mechCore"></div>
         <div class="mech-rings"></div>
 
-        <!-- rotating gears (visible during ROTATION stage) -->
-        <div class="mech-gears" id="mechGears">
-          <svg class="gear gear-a" viewBox="0 0 100 100"><path d="M50 8l5 0 3 9 9 3 0 5 0 5-9 3-3 9-5 0-5 0-3-9-9-3 0-5 0-5 9-3 3-9 5 0z" fill="none"/><g fill="#f0a830"><circle cx="50" cy="50" r="30"/></g></svg>
-        </div>
+        <svg class="xtrimmer" id="xtrimmer" viewBox="0 0 440 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- MESSER (Schneidwerk) -->
+          <g class="xpart" data-dx="-78" data-dy="34">
+            <rect x="20" y="122" width="232" height="14" rx="6" fill="#241c10" stroke="#3d3019" stroke-width="1.5"/>
+            <g fill="#d8c6a0" stroke="#b09a66" stroke-width="1">
+              <path d="M28 134 l10 -14 l10 14 Z"/><path d="M58 134 l10 -14 l10 14 Z"/>
+              <path d="M88 134 l10 -14 l10 14 Z"/><path d="M118 134 l10 -14 l10 14 Z"/>
+              <path d="M148 134 l10 -14 l10 14 Z"/><path d="M178 134 l10 -14 l10 14 Z"/>
+              <path d="M208 134 l10 -14 l10 14 Z"/>
+            </g>
+            <g fill="#f3e8cf" stroke="#cbb98e" stroke-width="1">
+              <path d="M40 124 l10 14 l10 -14 Z"/><path d="M70 124 l10 14 l10 -14 Z"/>
+              <path d="M100 124 l10 14 l10 -14 Z"/><path d="M130 124 l10 14 l10 -14 Z"/>
+              <path d="M160 124 l10 14 l10 -14 Z"/><path d="M190 124 l10 14 l10 -14 Z"/>
+              <path d="M220 124 l10 14 l10 -14 Z"/>
+            </g>
+            <path d="M20 129 L8 129 L12 122 L20 122 Z" fill="#d8c6a0"/>
+            <text class="xlabel" x="60" y="158">① Messer</text>
+          </g>
 
-        <!-- exploded disc stack -->
-        <div class="mech-discs" id="mechDiscs">
-          <div class="disc" data-layer="0" style="--w:120px"><span class="disc-tag">Messer</span></div>
-          <div class="disc" data-layer="1" style="--w:170px"><span class="disc-tag">Messerbalken</span></div>
-          <div class="disc" data-layer="2" style="--w:140px"><span class="disc-tag">Exzenter</span></div>
-          <div class="disc" data-layer="3" style="--w:200px"><span class="disc-tag">Getriebe</span></div>
-          <div class="disc" data-layer="4" style="--w:230px"><span class="disc-tag">Motor</span></div>
-          <div class="disc" data-layer="5" style="--w:180px"><span class="disc-tag">Akku</span></div>
-        </div>
+          <!-- HANDSCHUTZ -->
+          <g class="xpart" data-dx="-18" data-dy="-58">
+            <path d="M250 126 L236 108 L236 148 Z" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+            <text class="xlabel" x="214" y="104">② Handschutz</text>
+          </g>
+
+          <!-- GETRIEBE (Zahnrad) -->
+          <g class="xpart" data-dx="2" data-dy="78">
+            <g class="xgear">
+              <circle cx="250" cy="129" r="14" fill="#241c10" stroke="#3d3019" stroke-width="2"/>
+              <path d="M250 113 L250 117 M250 141 L250 145 M234 129 L238 129 M262 129 L266 129 M239 118 L241 120 M259 138 L261 140 M261 118 L259 120 M241 138 L239 140"
+                    stroke="#c9b384" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="250" cy="129" r="4.5" fill="#f0a830"/>
+            </g>
+            <text class="xlabel" x="236" y="172">③ Getriebe</text>
+          </g>
+
+          <!-- MOTOR -->
+          <g class="xpart" data-dx="34" data-dy="-6">
+            <path d="M250 100 Q252 86 268 86 L330 86 Q352 86 352 114 L352 154 Q352 170 332 170 L268 170 Q250 170 250 152 Z"
+                  fill="url(#bodyGradX)" stroke="#3d3019" stroke-width="2"/>
+            <path d="M276 104 L276 122 M286 104 L286 122 M296 104 L296 122 M306 104 L306 122" stroke="#141009" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="300" cy="130" r="13" fill="none" stroke="#f0a830" stroke-width="2" opacity="0.7"/>
+            <text class="xlabel" x="286" y="190">④ Motor</text>
+          </g>
+
+          <!-- GRIFF & SCHALTER -->
+          <g class="xpart" data-dx="48" data-dy="-50">
+            <path d="M300 86 Q320 48 358 60 Q392 72 372 120 L356 116 Q368 84 350 78 Q328 72 318 94 Z"
+                  fill="url(#bodyGradX)" stroke="#3d3019" stroke-width="2"/>
+            <rect x="262" y="126" width="26" height="10" rx="5" fill="#f0a830"/>
+            <text class="xlabel" x="356" y="64">⑤ Griff</text>
+          </g>
+
+          <!-- AKKU -->
+          <g class="xpart" data-dx="74" data-dy="72">
+            <rect x="300" y="148" width="74" height="46" rx="8" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+            <rect x="312" y="158" width="6" height="14" rx="2" fill="#f0a830"/>
+            <rect x="322" y="158" width="6" height="14" rx="2" fill="#f0a830"/>
+            <rect x="332" y="158" width="6" height="14" rx="2" fill="#c07d1c"/>
+            <text class="xlabel" x="312" y="210">⑥ Akku</text>
+          </g>
+
+          <defs>
+            <linearGradient id="bodyGradX" x1="250" y1="86" x2="352" y2="170" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#33291a"/>
+              <stop offset="1" stop-color="#181208"/>
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
     </div>
   </section>

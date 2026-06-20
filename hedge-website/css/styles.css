@@ -545,85 +545,45 @@ h2 {
   pointer-events: none;
 }
 
-/* rotating gears */
-.mech-gears {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity .3s;
-  z-index: 2;
-}
-.gear { width: 120px; height: 120px; display: block; filter: drop-shadow(0 0 14px rgba(240,168,48,.6)); }
-.gear circle { opacity: .25; }
-.gear-a {
-  background:
-    conic-gradient(from 0deg, transparent 0 8deg, rgba(240,168,48,.9) 8deg 16deg, transparent 16deg 30deg) ;
-  -webkit-mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
-          mask: radial-gradient(circle, transparent 24px, #000 25px, #000 54px, transparent 56px);
-  border-radius: 50%;
-  animation: gearSpin 6s linear infinite;
-}
-
-/* exploded disc stack */
-.mech-discs {
+/* the actual hedge trimmer that explodes into parts */
+.xtrimmer {
   position: relative;
-  width: 260px; height: 260px;
-  transform: rotateX(58deg) rotateZ(0deg);
-  transform-style: preserve-3d;
-  z-index: 1;
+  z-index: 2;
+  width: 115%;
+  max-width: 560px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.5));
 }
-.disc {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: var(--w, 180px); height: var(--w, 180px);
-  margin-left: calc(var(--w, 180px) / -2);
-  margin-top: calc(var(--w, 180px) / -2);
-  border-radius: 50%;
-  border: 2px solid rgba(240,168,48,.55);
-  background: radial-gradient(circle, rgba(240,168,48,.10), rgba(240,168,48,.02) 60%, transparent 72%);
-  box-shadow: 0 0 22px rgba(240,168,48,.22), inset 0 0 26px rgba(240,168,48,.12);
-  transform: translateZ(0px);
-  transition: transform .15s linear, opacity .3s, border-color .3s, box-shadow .3s;
+.xpart {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .12s linear;
 }
-.disc::after {
-  content: '';
-  position: absolute; inset: 30%;
-  border-radius: 50%;
-  border: 1px solid rgba(240,168,48,.3);
-}
-.disc.active {
-  border-color: var(--accent);
-  box-shadow: 0 0 34px rgba(240,168,48,.5), inset 0 0 30px rgba(240,168,48,.25);
-}
-.disc-tag {
-  position: absolute;
-  left: calc(100% + 14px); top: 50%;
-  transform: translateY(-50%) rotateX(-58deg);
-  transform-origin: left center;
-  white-space: nowrap;
-  font-size: .8rem;
-  font-weight: 600;
-  letter-spacing: .02em;
-  color: var(--text);
-  background: rgba(8,16,11,.7);
-  border: 1px solid rgba(240,168,48,.25);
-  border-radius: 6px;
-  padding: .25rem .6rem;
+/* the gear keeps spinning to read as a mechanism */
+.xgear { transform-box: fill-box; transform-origin: center; animation: gearSpin 7s linear infinite; }
+.xlabel {
+  fill: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
   opacity: 0;
-  transition: opacity .3s;
-  pointer-events: none;
+  transition: opacity .35s var(--ease-out);
+  paint-order: stroke;
+  stroke: rgba(8,8,6,.85);
+  stroke-width: 3px;
 }
-.disc.labelled .disc-tag { opacity: 1; }
+.xtrimmer.exploded .xlabel { opacity: 1; }
 
 @keyframes gearSpin { to { transform: rotate(360deg); } }
 @keyframes ringSpin { to { transform: rotate(360deg); } }
 
-/* mobile: collapse the pinned explode into a simple labelled stack */
+/* mobile: show the exploded trimmer statically, no long pin */
 @media (max-width: 900px) {
   .mech-section { min-height: 0; }
   .mech-sticky { position: relative; height: auto; grid-template-columns: 1fr; padding: 5rem 2rem; gap: 3rem; }
   .mech-stage { height: 360px; }
-  .mech-discs { transform: rotateX(58deg); }
+  .xtrimmer { width: 100%; }
 }
 
 /* ─── STATS ─────────────────────────────────────────────────────── */
