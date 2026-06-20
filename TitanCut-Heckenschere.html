@@ -552,6 +552,48 @@ h2 {
   pointer-events: none;
 }
 
+/* real 3D model layer */
+.mech3d-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: none;          /* shown only once WebGL init succeeds */
+}
+.mech-stage.has3d .mech3d-wrap { display: block; }
+.mech-stage.has3d .xtrimmer    { display: none; }   /* hide SVG fallback */
+#mech3d {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+.mech-labels { position: absolute; inset: 0; pointer-events: none; }
+.m3d-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(10,9,7,.62);
+  border: 1px solid rgba(240,168,48,.35);
+  box-shadow: 0 4px 14px rgba(0,0,0,.45);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity .25s var(--ease-out);
+  will-change: transform, opacity;
+}
+.m3d-label::before {
+  content: '';
+  position: absolute;
+  left: -16px; top: 50%;
+  width: 12px; height: 1px;
+  background: rgba(240,168,48,.5);
+}
+
 /* the actual hedge trimmer that explodes into parts */
 .xtrimmer {
   position: relative;
@@ -1173,6 +1215,7 @@ h2 {
 }
 
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
@@ -1389,6 +1432,12 @@ h2 {
       <div class="mech-stage">
         <div class="mech-core" id="mechCore"></div>
         <div class="mech-rings"></div>
+
+        <!-- echtes 3D-Modell (WebGL); SVG unten dient als Fallback -->
+        <div class="mech3d-wrap" id="mech3dWrap">
+          <canvas id="mech3d"></canvas>
+          <div class="mech-labels" id="mechLabels"></div>
+        </div>
 
         <svg class="xtrimmer" id="xtrimmer" viewBox="-150 -40 900 480" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
 <linearGradient id="gSteel" x1="0" y1="0" x2="0" y2="1">
@@ -2166,12 +2215,17 @@ ScrollTrigger.create({
     const explode = Math.max(0, Math.min(1, (p - 0.40) / 0.60)); // 0..1
     const eased   = explode * explode * (3 - 2 * explode);        // smoothstep
 
-    parts.forEach(g => {
-      const dx = (+g.dataset.dx || 0) * eased;
-      const dy = (+g.dataset.dy || 0) * eased;
-      g.style.transform = `translate(${dx}px, ${dy}px)`;
-    });
-    svg.classList.toggle('exploded', explode > 0.15);
+    if (window.__MECH3D) {
+      // drive the real 3D model; SVG fallback is hidden
+      window.__MECH3D.render(p, explode, eased);
+    } else {
+      parts.forEach(g => {
+        const dx = (+g.dataset.dx || 0) * eased;
+        const dy = (+g.dataset.dy || 0) * eased;
+        g.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+      svg.classList.toggle('exploded', explode > 0.15);
+    }
 
     // glowing core grows with the sequence
     core.style.opacity = (0.30 + p * 0.5).toFixed(3);
@@ -2280,6 +2334,339 @@ document.querySelectorAll('.spec-dot').forEach((dot, i) => {
 });
 
 console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight:800;font-size:18px;');
+
+/* ─── REAL 3D MECHANISM (Three.js) ──────────────────────────────────
+   Builds the hedge trimmer from real geometry with metal materials,
+   environment reflections, lights and shadows. Scroll rotates it and
+   blows it apart into labelled parts. Falls back to the SVG silently
+   if WebGL or the THREE library is unavailable.                       */
+(function buildMech3D() {
+  if (!window.THREE) return;                         // CDN blocked → SVG fallback
+  const canvas = document.getElementById('mech3d');
+  const stage  = document.querySelector('.mech-stage');
+  const labelLayer = document.getElementById('mechLabels');
+  if (!canvas || !stage) return;
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  } catch (e) { return; }                            // no WebGL → SVG fallback
+  if (!renderer || !renderer.getContext()) return;
+
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(DPR);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+
+  /* ---- environment map (gradient) for believable metal reflections ---- */
+  function makeEnv() {
+    const c = document.createElement('canvas'); c.width = 128; c.height = 64;
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, 0, 64);
+    g.addColorStop(0.00, '#454d5e');
+    g.addColorStop(0.42, '#23272f');
+    g.addColorStop(0.50, '#6a5f48');
+    g.addColorStop(0.58, '#22262d');
+    g.addColorStop(1.00, '#0b0a08');
+    x.fillStyle = g; x.fillRect(0, 0, 128, 64);
+    x.fillStyle = 'rgba(255,238,205,0.95)'; x.fillRect(14, 10, 44, 5);   // soft light bar
+    x.fillStyle = 'rgba(240,168,48,0.30)';  x.fillRect(78, 40, 40, 8);   // warm bounce
+    const tex = new THREE.CanvasTexture(c);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const env = pmrem.fromEquirectangular(tex).texture;
+    tex.dispose(); pmrem.dispose();
+    return env;
+  }
+  scene.environment = makeEnv();
+
+  /* ---- materials ---- */
+  const M = {
+    housing: new THREE.MeshStandardMaterial({ color: 0x2b2517, metalness: 0.85, roughness: 0.42 }),
+    steel:   new THREE.MeshStandardMaterial({ color: 0xcfc6ad, metalness: 1.0,  roughness: 0.26 }),
+    gear:    new THREE.MeshStandardMaterial({ color: 0xa3946a, metalness: 1.0,  roughness: 0.30 }),
+    copper:  new THREE.MeshStandardMaterial({ color: 0xd98a36, metalness: 0.95, roughness: 0.32 }),
+    cell:    new THREE.MeshStandardMaterial({ color: 0xb9a877, metalness: 0.8,  roughness: 0.38 }),
+    grip:    new THREE.MeshStandardMaterial({ color: 0x16130c, metalness: 0.25, roughness: 0.85 }),
+    pcb:     new THREE.MeshStandardMaterial({ color: 0x123a18, metalness: 0.3,  roughness: 0.6 }),
+    dark:    new THREE.MeshStandardMaterial({ color: 0x0e0b06, metalness: 0.4,  roughness: 0.7 }),
+    accent:  new THREE.MeshStandardMaterial({ color: 0x3a2606, metalness: 0.5,  roughness: 0.4,
+                                              emissive: 0xf0a830, emissiveIntensity: 1.1 }),
+  };
+
+  const root = new THREE.Group();          // everything (gets scroll rotation)
+  scene.add(root);
+
+  // helper: make a "part" group that can fly out on explode
+  const partList = [];   // { group, dir:Vector3, label, spinners:[] }
+  function addPart(dir, label) {
+    const g = new THREE.Group();
+    root.add(g);
+    const p = { group: g, dir: new THREE.Vector3(dir[0], dir[1], dir[2]), label, labelEl: null, home: new THREE.Vector3() };
+    partList.push(p);
+    return g;
+  }
+  function box(w, h, d, mat) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.castShadow = m.receiveShadow = true; return m; }
+  function cyl(rt, rb, h, mat, seg) { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 36), mat); m.castShadow = m.receiveShadow = true; return m; }
+  function rrect(w, h, d, r, mat) {  // rounded box via extruded rounded rect
+    const s = new THREE.Shape();
+    const x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y);
+    s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+    s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+    s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 2, steps: 1 });
+    geo.translate(0, 0, -d / 2);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = m.receiveShadow = true; return m;
+  }
+  function gearMesh(teeth, ro, rr, depth, mat) {
+    const shape = new THREE.Shape();
+    const step = Math.PI * 2 / teeth;
+    for (let i = 0; i < teeth; i++) {
+      const a = i * step;
+      [[a - step * 0.42, rr], [a - step * 0.18, ro], [a + step * 0.18, ro], [a + step * 0.42, rr]]
+        .forEach(([ang, r], j) => {
+          const px = Math.cos(ang) * r, py = Math.sin(ang) * r;
+          (i === 0 && j === 0) ? shape.moveTo(px, py) : shape.lineTo(px, py);
+        });
+    }
+    shape.closePath();
+    const hole = new THREE.Path(); hole.absarc(0, 0, rr * 0.4, 0, Math.PI * 2, true); shape.holes.push(hole);
+    const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: depth * 0.18, bevelSize: depth * 0.12, bevelSegments: 1, steps: 1 });
+    geo.translate(0, 0, -depth / 2);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = m.receiveShadow = true; return m;
+  }
+
+  const spinners = [];   // meshes that rotate continuously
+
+  /* ① BLADE ----------------------------------------------------------- */
+  (function () {
+    const g = addPart([-0.2, -1, 0], '① Messer');
+    const bar = box(9.0, 0.55, 0.3, M.housing); bar.position.set(-4.7, 0, 0); g.add(bar);
+    const edge = box(9.0, 0.12, 0.34, M.steel); edge.position.set(-4.7, 0.28, 0); g.add(edge);
+    // teeth (triangular prisms) along both sides
+    const triShape = new THREE.Shape();
+    triShape.moveTo(0, 0); triShape.lineTo(0.5, 0.55); triShape.lineTo(1.0, 0); triShape.closePath();
+    const triGeo = new THREE.ExtrudeGeometry(triShape, { depth: 0.26, bevelEnabled: false });
+    triGeo.translate(0, 0, -0.13);
+    for (let i = 0; i < 16; i++) {
+      const tx = -8.8 + i * 0.56;
+      const tTop = new THREE.Mesh(triGeo, M.steel); tTop.castShadow = true;
+      tTop.position.set(tx, 0.28, 0); g.add(tTop);
+      const tBot = new THREE.Mesh(triGeo, M.steel); tBot.castShadow = true;
+      tBot.position.set(tx + 0.28, -0.28, 0); tBot.rotation.z = Math.PI; g.add(tBot);
+    }
+    const tip = cyl(0.16, 0.16, 0.3, M.steel, 12); tip.rotation.z = Math.PI / 2; tip.position.set(-9.3, 0, 0); g.add(tip);
+  })();
+
+  /* ② HANDGUARD ------------------------------------------------------- */
+  (function () {
+    const g = addPart([0, 1, 0.4], '② Handschutz');
+    const plate = box(0.25, 1.7, 1.7, M.housing); plate.position.set(0.1, 0, 0); g.add(plate);
+    const lip = box(0.5, 0.18, 1.7, M.accent); lip.position.set(0.35, 0.85, 0); g.add(lip);
+  })();
+
+  /* ③ ECCENTRIC + CONROD --------------------------------------------- */
+  (function () {
+    const g = addPart([-0.1, -1.1, 0.6], '③ Exzenter & Pleuel');
+    const ecc = cyl(0.6, 0.6, 0.45, M.gear, 28); ecc.rotation.x = Math.PI / 2; ecc.position.set(0.9, 0, 0.2); g.add(ecc); spinners.push({ m: ecc, s: 1.4, ax: 'z' });
+    const rod = box(1.6, 0.22, 0.18, M.copper); rod.position.set(0.1, 0, 0.2); g.add(rod);
+    const pin = cyl(0.14, 0.14, 0.5, M.accent, 16); pin.rotation.x = Math.PI / 2; pin.position.set(1.2, 0.32, 0.2); g.add(pin);
+  })();
+
+  /* ④ GEARS ----------------------------------------------------------- */
+  (function () {
+    const g = addPart([-0.3, 1.1, 0.7], '④ Getriebe & Ritzel');
+    const big = gearMesh(18, 1.05, 0.78, 0.34, M.gear); big.position.set(1.5, 0.1, 0.55); g.add(big); spinners.push({ m: big, s: -1.0, ax: 'z' });
+    const hub = cyl(0.34, 0.34, 0.4, M.housing, 24); hub.rotation.x = Math.PI / 2; hub.position.set(1.5, 0.1, 0.55); g.add(hub);
+    const small = gearMesh(9, 0.5, 0.34, 0.3, M.copper); small.position.set(2.45, 0.55, 0.55); g.add(small); spinners.push({ m: small, s: 2.0, ax: 'z' });
+  })();
+
+  /* ⑤ STATOR ---------------------------------------------------------- */
+  (function () {
+    const g = addPart([0, 1.2, -0.2], '⑤ Stator (Wicklung)');
+    const ringO = cyl(1.5, 1.5, 1.1, M.housing, 40); ringO.rotation.z = Math.PI / 2; ringO.position.set(1.5, 0, 0); g.add(ringO);
+    const ringI = cyl(0.95, 0.95, 1.16, M.dark, 40); ringI.rotation.z = Math.PI / 2; ringI.position.set(1.5, 0, 0); g.add(ringI);
+    for (let k = 0; k < 6; k++) {
+      const a = k * Math.PI / 3;
+      const coil = box(0.95, 0.5, 0.5, M.copper);
+      coil.position.set(1.5, Math.cos(a) * 1.18, Math.sin(a) * 1.18);
+      coil.rotation.x = a; g.add(coil);
+    }
+  })();
+
+  /* ⑥ ROTOR + SHAFT --------------------------------------------------- */
+  (function () {
+    const g = addPart([0, -0.3, 1.3], '⑥ Rotor & Welle');
+    const rot = cyl(0.82, 0.82, 1.0, M.steel, 28); rot.rotation.z = Math.PI / 2; rot.position.set(1.5, 0, 0); g.add(rot); spinners.push({ m: rot, s: 4.5, ax: 'x' });
+    for (let k = 0; k < 8; k++) {
+      const a = k * Math.PI / 4;
+      const slot = box(1.02, 0.12, 0.18, M.dark);
+      slot.position.set(1.5, Math.cos(a) * 0.7, Math.sin(a) * 0.7);
+      slot.rotation.x = a; rot.add(slot);
+    }
+    const shaft = cyl(0.16, 0.16, 4.4, M.steel, 18); shaft.rotation.z = Math.PI / 2; shaft.position.set(0.2, 0, 0); g.add(shaft); spinners.push({ m: shaft, s: 4.5, ax: 'x' });
+    const core = cyl(0.2, 0.2, 1.04, M.accent, 16); core.rotation.z = Math.PI / 2; core.position.set(1.5, 0, 0); g.add(core);
+  })();
+
+  /* ⑦ MOTOR HOUSING --------------------------------------------------- */
+  (function () {
+    const g = addPart([0.3, 0, -1.3], '⑦ Motorgehäuse');
+    const shell = rrect(3.0, 2.7, 2.7, 0.7, M.housing); shell.rotation.y = Math.PI / 2; shell.position.set(1.6, 0, 0); g.add(shell);
+    for (let i = 0; i < 8; i++) {
+      const fin = box(0.06, 1.2, 2.4, M.dark);
+      fin.position.set(0.45 + i * 0.16, 0.55, 0); g.add(fin);
+    }
+    [[3.1, 1.0, 1.0], [3.1, 1.0, -1.0], [3.1, -1.0, 1.0], [3.1, -1.0, -1.0]].forEach(p => {
+      const bolt = cyl(0.13, 0.13, 0.12, M.gear, 12); bolt.rotation.x = Math.PI / 2; bolt.position.set(p[0], p[1], p[2]); g.add(bolt);
+    });
+  })();
+
+  /* ⑧ HANDLE + ELECTRONICS ------------------------------------------- */
+  (function () {
+    const g = addPart([0.5, 1.2, -0.4], '⑧ Griff & Elektronik');
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(2.0, 1.2, 0), new THREE.Vector3(2.6, 2.7, 0),
+      new THREE.Vector3(4.2, 2.9, 0), new THREE.Vector3(4.9, 1.6, 0),
+      new THREE.Vector3(4.6, 0.4, 0),
+    ]);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.34, 16, false), M.grip);
+    tube.castShadow = tube.receiveShadow = true; g.add(tube);
+    const trigger = box(0.5, 0.5, 0.7, M.accent); trigger.position.set(2.0, 0.5, 0); g.add(trigger);
+    const pcb = box(0.1, 0.7, 1.1, M.pcb); pcb.position.set(2.9, 1.0, 0); g.add(pcb);
+  })();
+
+  /* ⑨ BATTERY --------------------------------------------------------- */
+  (function () {
+    const g = addPart([0.4, -1.3, 0], '⑨ Akku (Lithium-Zellen)');
+    const pack = rrect(3.0, 1.4, 1.8, 0.3, M.housing); pack.rotation.y = Math.PI / 2; pack.position.set(3.0, -1.7, 0); g.add(pack);
+    for (let i = 0; i < 5; i++) {
+      const cell = cyl(0.26, 0.26, 1.2, M.cell, 20); cell.rotation.z = Math.PI / 2;
+      cell.position.set(2.0 + i * 0.5, -1.7, 0); g.add(cell);
+      const cap = cyl(0.1, 0.1, 0.1, M.accent, 12); cap.rotation.z = Math.PI / 2; cap.position.set(1.4, -1.7 + 0, 0);
+    }
+    const term = box(0.4, 0.18, 0.7, M.accent); term.position.set(1.5, -1.1, 0); g.add(term);
+  })();
+
+  // record each part's home position (its children are offset in world space,
+  // so the group itself starts at origin and we translate it along dir).
+  partList.forEach(p => { p.home.copy(p.group.position); });
+
+  /* ---- labels (HTML, projected each frame) ---- */
+  partList.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'm3d-label';
+    el.textContent = p.label;
+    labelLayer.appendChild(el);
+    p.labelEl = el;
+    // anchor: average of children bbox centre
+    const bb = new THREE.Box3().setFromObject(p.group);
+    p.anchor = bb.getCenter(new THREE.Vector3());
+  });
+
+  /* ---- lights ---- */
+  scene.add(new THREE.HemisphereLight(0x9fb4d4, 0x140f08, 0.55));
+  const key = new THREE.DirectionalLight(0xfff0d8, 2.3);
+  key.position.set(-6, 9, 8); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.near = 1; key.shadow.camera.far = 60;
+  key.shadow.camera.left = -14; key.shadow.camera.right = 14;
+  key.shadow.camera.top = 14; key.shadow.camera.bottom = -14;
+  key.shadow.bias = -0.0004;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xf0a830, 1.3); rim.position.set(8, 3, -7); scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xbfd0ff, 0.5); fill.position.set(5, -4, 6); scene.add(fill);
+
+  /* ---- contact shadow ---- */
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.34 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -3.4; ground.receiveShadow = true; scene.add(ground);
+
+  /* ---- frame the camera to the assembled model ---- */
+  const bbox = new THREE.Box3().setFromObject(root);
+  const center = bbox.getCenter(new THREE.Vector3());
+  const size = bbox.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fitDist = (maxDim * 1.45) / Math.tan((camera.fov * Math.PI / 180) / 2);
+  const camDir = new THREE.Vector3(0.12, 0.34, 1).normalize();
+  const camTarget = center.clone();
+  function placeCamera() {
+    camera.position.copy(camTarget).add(camDir.clone().multiplyScalar(fitDist));
+    camera.lookAt(camTarget);
+  }
+
+  /* ---- sizing ---- */
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    placeCamera();
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  /* ---- scroll-driven state + render loop ---- */
+  let targetExplode = 0, curExplode = 0, scrollP = 0;
+  const tmp = new THREE.Vector3();
+  const projV = new THREE.Vector3();
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    curExplode += (targetExplode - curExplode) * Math.min(1, dt * 8);  // smooth
+
+    // turntable: scroll drives base yaw, plus a gentle idle sway
+    root.rotation.y = -0.55 + scrollP * 1.15 + Math.sin(now / 3500) * 0.05;
+    root.rotation.x = -0.12;
+
+    // spin live mechanism (faster as it assembles, calmer when exploded)
+    const spinFactor = 0.4 + (1 - curExplode) * 0.8;
+    spinners.forEach(sp => { sp.m.rotation[sp.ax] += sp.s * dt * spinFactor; });
+
+    // explode: push each part along its direction
+    partList.forEach(p => {
+      p.group.position.copy(p.home).addScaledVector(p.dir, curExplode * 3.1);
+    });
+
+    renderer.render(scene, camera);
+
+    // project labels
+    const rect = stage.getBoundingClientRect();
+    const showLabels = curExplode > 0.2;
+    partList.forEach(p => {
+      const el = p.labelEl;
+      if (!showLabels) { el.style.opacity = '0'; return; }
+      tmp.copy(p.anchor).addScaledVector(p.dir, curExplode * 3.1);
+      tmp.applyMatrix4(root.matrixWorld);
+      projV.copy(tmp).project(camera);
+      const vis = projV.z < 1;
+      el.style.opacity = vis ? String((curExplode - 0.2) / 0.8) : '0';
+      el.style.left = ((projV.x * 0.5 + 0.5) * rect.width) + 'px';
+      el.style.top  = ((-projV.y * 0.5 + 0.5) * rect.height) + 'px';
+    });
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ---- public API used by the scroll driver ---- */
+  window.__MECH3D = {
+    render(p, explode /*, eased */) {
+      scrollP = p;
+      targetExplode = explode;
+    }
+  };
+
+  stage.classList.add('has3d');   // hide SVG, reveal canvas
+})();
 
 </script>
 </body>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VERDA — TitanCut Akku-Heckenschere</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
@@ -221,6 +222,12 @@
       <div class="mech-stage">
         <div class="mech-core" id="mechCore"></div>
         <div class="mech-rings"></div>
+
+        <!-- echtes 3D-Modell (WebGL); SVG unten dient als Fallback -->
+        <div class="mech3d-wrap" id="mech3dWrap">
+          <canvas id="mech3d"></canvas>
+          <div class="mech-labels" id="mechLabels"></div>
+        </div>
 
         <svg class="xtrimmer" id="xtrimmer" viewBox="-150 -40 900 480" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
 <linearGradient id="gSteel" x1="0" y1="0" x2="0" y2="1">
