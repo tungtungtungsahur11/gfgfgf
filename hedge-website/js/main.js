@@ -239,37 +239,77 @@ ScrollTrigger.create({
   }
 });
 
-/* ─── ANATOMY: assemble the trimmer on scroll ──────────────────── */
-(function anatomyScroll() {
-  const section = document.querySelector('.anatomy-section');
+/* ─── MECHANISM: rotate gears, then explode into layers on scroll ─ */
+(function mechScroll() {
+  const section = document.querySelector('.mech-section');
   if (!section) return;
-  const parts = gsap.utils.toArray('.anatomy-svg .part');
-  const steps = gsap.utils.toArray('.an-step');
-  const total = steps.length;
 
-  function setActive(idx) {
-    parts.forEach(p => {
-      const n = +p.dataset.part;
-      p.classList.toggle('revealed', n <= idx);
-      p.classList.toggle('active', n === idx);
-    });
-    steps.forEach(s => {
-      const n = +s.dataset.part;
-      s.classList.toggle('active', n === idx);
-      s.classList.toggle('done', n < idx);
-    });
+  const discs   = gsap.utils.toArray('.disc');
+  const core    = document.getElementById('mechCore');
+  const gears   = document.getElementById('mechGears');
+  const idxEl   = document.getElementById('mechIndex');
+  const titleEl = document.getElementById('mechTitle');
+  const subEl   = document.getElementById('mechSub');
+  const readEl  = document.getElementById('mechReadout');
+  const N = discs.length;
+
+  // three narrative stages, like the watch page
+  const stages = [
+    { idx: '01', title: 'ANTRIEB',  sub: 'Akku und bürstenloser Motor liefern die Kraft — kabellos und konstant.',
+      read: [['Spannung','18 V'],['Akku','4,0 Ah'],['Motor','Brushless']] },
+    { idx: '02', title: 'ROTATION', sub: 'Das Getriebe wandelt die Motordrehung in bis zu 3.200 Hübe pro Minute um.',
+      read: [['Drehzahl','3.200 /min'],['Hubzahl','3.200 spm'],['Frequenz','53 Hz']] },
+    { idx: '03', title: 'AUFBAU',   sub: 'Sechs Komponenten greifen ineinander — vom Akku bis zum Diamantmesser.',
+      read: [['Komponenten','6'],['Schnittstärke','24 mm'],['Messer','60 cm']] },
+  ];
+
+  let curStage = -1;
+  function setStage(s) {
+    if (s === curStage) return;
+    curStage = s;
+    const st = stages[s];
+    [titleEl, subEl, readEl].forEach(el => el.classList.add('mech-swap'));
+    setTimeout(() => {
+      idxEl.textContent   = st.idx;
+      titleEl.textContent = st.title;
+      subEl.textContent   = st.sub;
+      readEl.innerHTML    = st.read.map(r => `<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+      idxEl.style.color   = 'rgba(111,207,79,' + (0.16 + s * 0.12) + ')';
+      [titleEl, subEl, readEl].forEach(el => el.classList.remove('mech-swap'));
+    }, 180);
   }
-  setActive(1);
+
+  function render(p) {
+    // p: 0..1 over the whole pinned section
+    // gears most visible in the middle (rotation) stage
+    const gearVis = Math.max(0, 1 - Math.abs(p - 0.45) / 0.30);
+    gears.style.opacity = gearVis.toFixed(3);
+
+    // explosion ramps up in the last third
+    const explode = Math.max(0, (p - 0.45) / 0.55); // 0..1
+    const spread  = explode * 150;                  // px between layers
+    const mid     = (N - 1) / 2;
+    discs.forEach((d, i) => {
+      const z = (i - mid) * spread;
+      d.style.transform = `translateZ(${z}px)`;
+      d.classList.toggle('labelled', explode > 0.25);
+      d.classList.toggle('active', explode > 0.25 && Math.round(p * (N - 1)) === i);
+    });
+
+    // glowing core grows with the whole sequence
+    core.style.opacity = (0.35 + p * 0.55).toFixed(3);
+    core.style.transform = `scale(${(0.6 + p * 1.1).toFixed(3)})`;
+
+    setStage(p < 0.34 ? 0 : p < 0.67 ? 1 : 2);
+  }
+  render(0);
 
   ScrollTrigger.create({
     trigger: section,
     start: 'top top',
     end: 'bottom bottom',
-    onUpdate(self) {
-      // map scroll progress -> 1..total
-      const idx = Math.min(total, Math.max(1, Math.floor(self.progress * total) + 1));
-      setActive(idx);
-    }
+    scrub: true,
+    onUpdate(self) { render(self.progress); }
   });
 })();
 

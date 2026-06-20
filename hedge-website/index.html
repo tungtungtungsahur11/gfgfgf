@@ -201,105 +201,40 @@
     </div>
   </section>
 
-  <!-- ─── AUFBAU / ANATOMIE ──────────────────────────────────────── -->
-  <section id="anatomy" class="anatomy-section">
-    <div class="anatomy-sticky">
-      <div class="anatomy-visual">
-        <div class="anatomy-glow"></div>
-        <svg class="anatomy-svg" viewBox="0 0 440 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- 6 · MESSER (Schneidwerk) -->
-          <g class="part" data-part="6">
-            <rect x="20" y="92" width="232" height="14" rx="6" fill="#1b2b22" stroke="#2a3f30" stroke-width="1.5"/>
-            <g fill="#c9d6cd" stroke="#9fb0a6" stroke-width="1">
-              <path d="M28 104 l10 -14 l10 14 Z"/>
-              <path d="M58 104 l10 -14 l10 14 Z"/>
-              <path d="M88 104 l10 -14 l10 14 Z"/>
-              <path d="M118 104 l10 -14 l10 14 Z"/>
-              <path d="M148 104 l10 -14 l10 14 Z"/>
-              <path d="M178 104 l10 -14 l10 14 Z"/>
-              <path d="M208 104 l10 -14 l10 14 Z"/>
-            </g>
-            <g fill="#eef4ef" stroke="#b9c8bf" stroke-width="1">
-              <path d="M40 94 l10 14 l10 -14 Z"/>
-              <path d="M70 94 l10 14 l10 -14 Z"/>
-              <path d="M100 94 l10 14 l10 -14 Z"/>
-              <path d="M130 94 l10 14 l10 -14 Z"/>
-              <path d="M160 94 l10 14 l10 -14 Z"/>
-              <path d="M190 94 l10 14 l10 -14 Z"/>
-              <path d="M220 94 l10 14 l10 -14 Z"/>
-            </g>
-            <path d="M20 99 L8 99 L12 92 L20 92 Z" fill="#c9d6cd"/>
-          </g>
-          <!-- 2 · MOTOR -->
-          <g class="part" data-part="2">
-            <path d="M250 70 Q252 56 268 56 L330 56 Q352 56 352 84 L352 124 Q352 140 332 140 L268 140 Q250 140 250 122 Z"
-                  fill="url(#bodyGradA)" stroke="#2a3f30" stroke-width="2"/>
-            <path d="M276 74 L276 92 M286 74 L286 92 M296 74 L296 92 M306 74 L306 92" stroke="#0f1c16" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="300" cy="100" r="13" fill="none" stroke="#6fcf4f" stroke-width="2" opacity="0.7"/>
-            <path d="M300 90 L300 100 L308 105" stroke="#6fcf4f" stroke-width="2" stroke-linecap="round"/>
-          </g>
-          <!-- 5 · HANDSCHUTZ -->
-          <g class="part" data-part="5">
-            <path d="M250 96 L236 78 L236 118 Z" fill="#16261c" stroke="#2a3f30" stroke-width="2"/>
-          </g>
-          <!-- 3 · GETRIEBE (Cog) -->
-          <g class="part" data-part="3">
-            <circle cx="250" cy="99" r="13" fill="#1b2b22" stroke="#2a3f30" stroke-width="2"/>
-            <path d="M250 84 L250 88 M250 110 L250 114 M235 99 L239 99 M261 99 L265 99 M240 89 L242 91 M258 107 L260 109 M260 89 L258 91 M242 107 L240 109"
-                  stroke="#9fb0a6" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="250" cy="99" r="4" fill="#6fcf4f"/>
-          </g>
-          <!-- 4 · GRIFF & SCHALTER -->
-          <g class="part" data-part="4">
-            <path d="M300 56 Q320 18 358 30 Q392 42 372 90 L356 86 Q368 54 350 48 Q328 42 318 64 Z"
-                  fill="url(#bodyGradA)" stroke="#2a3f30" stroke-width="2"/>
-            <rect x="262" y="96" width="26" height="10" rx="5" fill="#6fcf4f"/>
-          </g>
-          <!-- 1 · AKKU -->
-          <g class="part" data-part="1">
-            <rect x="300" y="118" width="74" height="46" rx="8" fill="#16261c" stroke="#2a3f30" stroke-width="2"/>
-            <rect x="312" y="128" width="6" height="14" rx="2" fill="#6fcf4f"/>
-            <rect x="322" y="128" width="6" height="14" rx="2" fill="#6fcf4f"/>
-            <rect x="332" y="128" width="6" height="14" rx="2" fill="#4ea838"/>
-            <path d="M348 130 l-5 9 l4 0 l-5 9" stroke="#6fcf4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-          <defs>
-            <linearGradient id="bodyGradA" x1="250" y1="56" x2="352" y2="140" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#23362a"/>
-              <stop offset="1" stop-color="#13201a"/>
-            </linearGradient>
-          </defs>
-        </svg>
+  <!-- ─── AUFBAU / MECHANISMUS (scroll-driven explosion) ─────────── -->
+  <section id="anatomy" class="mech-section">
+    <div class="mech-sticky">
+      <!-- left: changing info -->
+      <div class="mech-info">
+        <p class="mech-eyebrow">Aufbau</p>
+        <span class="mech-index" id="mechIndex">01</span>
+        <h2 class="mech-title" id="mechTitle">ANTRIEB</h2>
+        <p class="mech-sub" id="mechSub">Akku und bürstenloser Motor liefern die Kraft — kabellos und konstant.</p>
+        <div class="mech-readout" id="mechReadout">
+          <div><span>Spannung</span><b>18 V</b></div>
+          <div><span>Akku</span><b>4,0 Ah</b></div>
+          <div><span>Motor</span><b>Brushless</b></div>
+        </div>
       </div>
-      <div class="anatomy-info">
-        <p class="section-label">Aufbau</p>
-        <h2>Wie eine Heckenschere<br><span class="accent">aufgebaut ist.</span></h2>
-        <p class="anatomy-lead">Scrolle und sieh, wie sich die TitanCut Stück für Stück zusammensetzt — vom Akku bis zum Messer.</p>
-        <div class="anatomy-steps">
-          <div class="an-step" data-part="1">
-            <span class="an-num">01</span>
-            <div class="an-text"><h3>Akku</h3><p>Die Energiequelle. Der Lithium-Ionen-Wechselakku liefert den Strom — kabellos und überall einsatzbereit.</p></div>
-          </div>
-          <div class="an-step" data-part="2">
-            <span class="an-num">02</span>
-            <div class="an-text"><h3>Motor</h3><p>Der bürstenlose Brushless-Motor wandelt Strom in Drehbewegung um — kraftvoll, leise und verschleißarm.</p></div>
-          </div>
-          <div class="an-step" data-part="3">
-            <span class="an-num">03</span>
-            <div class="an-text"><h3>Getriebe</h3><p>Das Getriebe übersetzt die schnelle Drehung des Motors in die hin- und hergehende Hubbewegung der Messer.</p></div>
-          </div>
-          <div class="an-step" data-part="4">
-            <span class="an-num">04</span>
-            <div class="an-text"><h3>Griff & Schalter</h3><p>Hier steuerst du das Gerät. Die Zweihand-Sicherheitsschaltung startet das Messer nur, wenn beide Hände greifen.</p></div>
-          </div>
-          <div class="an-step" data-part="5">
-            <span class="an-num">05</span>
-            <div class="an-text"><h3>Handschutz</h3><p>Die Schutzplatte zwischen Griff und Messer bewahrt deine Hand vor Ästen und abrutschenden Zweigen.</p></div>
-          </div>
-          <div class="an-step" data-part="6">
-            <span class="an-num">06</span>
-            <div class="an-text"><h3>Messer</h3><p>Das Schneidwerk: zwei lasergeschliffene Diamantmesser scheren gegeneinander und schneiden so sauber durch jede Hecke.</p></div>
-          </div>
+
+      <!-- right: glowing exploding mechanism -->
+      <div class="mech-stage">
+        <div class="mech-core" id="mechCore"></div>
+        <div class="mech-rings"></div>
+
+        <!-- rotating gears (visible during ROTATION stage) -->
+        <div class="mech-gears" id="mechGears">
+          <svg class="gear gear-a" viewBox="0 0 100 100"><path d="M50 8l5 0 3 9 9 3 0 5 0 5-9 3-3 9-5 0-5 0-3-9-9-3 0-5 0-5 9-3 3-9 5 0z" fill="none"/><g fill="#6fcf4f"><circle cx="50" cy="50" r="30"/></g></svg>
+        </div>
+
+        <!-- exploded disc stack -->
+        <div class="mech-discs" id="mechDiscs">
+          <div class="disc" data-layer="0" style="--w:120px"><span class="disc-tag">Messer</span></div>
+          <div class="disc" data-layer="1" style="--w:170px"><span class="disc-tag">Messerbalken</span></div>
+          <div class="disc" data-layer="2" style="--w:140px"><span class="disc-tag">Exzenter</span></div>
+          <div class="disc" data-layer="3" style="--w:200px"><span class="disc-tag">Getriebe</span></div>
+          <div class="disc" data-layer="4" style="--w:230px"><span class="disc-tag">Motor</span></div>
+          <div class="disc" data-layer="5" style="--w:180px"><span class="disc-tag">Akku</span></div>
         </div>
       </div>
     </div>
