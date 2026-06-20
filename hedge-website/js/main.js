@@ -239,6 +239,40 @@ ScrollTrigger.create({
   }
 });
 
+/* ─── ANATOMY: assemble the trimmer on scroll ──────────────────── */
+(function anatomyScroll() {
+  const section = document.querySelector('.anatomy-section');
+  if (!section) return;
+  const parts = gsap.utils.toArray('.anatomy-svg .part');
+  const steps = gsap.utils.toArray('.an-step');
+  const total = steps.length;
+
+  function setActive(idx) {
+    parts.forEach(p => {
+      const n = +p.dataset.part;
+      p.classList.toggle('revealed', n <= idx);
+      p.classList.toggle('active', n === idx);
+    });
+    steps.forEach(s => {
+      const n = +s.dataset.part;
+      s.classList.toggle('active', n === idx);
+      s.classList.toggle('done', n < idx);
+    });
+  }
+  setActive(1);
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: 'bottom bottom',
+    onUpdate(self) {
+      // map scroll progress -> 1..total
+      const idx = Math.min(total, Math.max(1, Math.floor(self.progress * total) + 1));
+      setActive(idx);
+    }
+  });
+})();
+
 /* Card tilt on hover */
 function tilt(selector, depth, perspective) {
   document.querySelectorAll(selector).forEach(card => {

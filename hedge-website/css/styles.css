@@ -456,6 +456,96 @@ h2 {
 .spec-sym { font-size: clamp(1.2rem, 3vw, 1.7rem); }
 .spec-badge p { font-size: .82rem; color: var(--text-dim); margin-top: .2rem; letter-spacing: .06em; text-transform: uppercase; }
 
+/* ─── ANATOMY / AUFBAU ──────────────────────────────────────────── */
+.anatomy-section {
+  min-height: 560vh;
+  position: relative;
+  background: var(--bg);
+}
+.anatomy-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 4rem;
+  overflow: hidden;
+}
+
+.anatomy-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.anatomy-glow {
+  position: absolute;
+  inset: 10% 5%;
+  background: radial-gradient(ellipse at 40% 55%, rgba(111,207,79,.18), transparent 65%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+.anatomy-svg { width: 100%; height: auto; overflow: visible; position: relative; z-index: 1; }
+
+/* Each part fades + slides into place when revealed */
+.anatomy-svg .part {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out), filter .3s;
+}
+.anatomy-svg .part[data-part="1"] { transform: translate(36px, 26px); }
+.anatomy-svg .part[data-part="2"] { transform: translate(34px, -8px); }
+.anatomy-svg .part[data-part="3"] { transform: translate(0, 34px); }
+.anatomy-svg .part[data-part="4"] { transform: translate(10px, -34px); }
+.anatomy-svg .part[data-part="5"] { transform: translate(-26px, 0); }
+.anatomy-svg .part[data-part="6"] { transform: translate(-48px, 10px); }
+.anatomy-svg .part.revealed { opacity: 1; transform: translate(0, 0); }
+.anatomy-svg .part.active { filter: drop-shadow(0 0 10px rgba(111,207,79,.55)); }
+
+.anatomy-info h2 { font-size: clamp(2.2rem, 4.5vw, 3.6rem); margin-bottom: 1rem; }
+.anatomy-lead { font-size: 1rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 2rem; }
+
+.anatomy-steps { display: flex; flex-direction: column; gap: .4rem; }
+.an-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: .9rem 1rem;
+  border-left: 2px solid var(--border);
+  border-radius: 0 12px 12px 0;
+  opacity: .3;
+  transition: opacity .4s var(--ease-out), background .4s, border-color .4s;
+}
+.an-step.active {
+  opacity: 1;
+  background: rgba(111,207,79,.06);
+  border-left-color: var(--accent);
+}
+.an-step.done { opacity: .55; }
+.an-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -.02em;
+  line-height: 1.4;
+}
+.an-text h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: .2rem; }
+.an-text p { font-size: .9rem; color: var(--text-dim); line-height: 1.55; }
+
+/* On small screens collapse the long pinned scroll into a simple stack */
+@media (max-width: 900px) {
+  .anatomy-section { min-height: 0; }
+  .anatomy-sticky { position: relative; height: auto; grid-template-columns: 1fr; padding: 5rem 2rem; gap: 2.5rem; }
+  .anatomy-svg .part { opacity: 1 !important; transform: none !important; }
+  .an-step { opacity: 1; }
+}
+
 /* ─── STATS ─────────────────────────────────────────────────────── */
 .stats-section {
   padding: 6rem 0;
