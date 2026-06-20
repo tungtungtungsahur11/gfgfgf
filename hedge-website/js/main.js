@@ -454,7 +454,26 @@ console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight
     tex.dispose(); pmrem.dispose();
     return env;
   }
-  scene.environment = makeEnv();
+  scene.environment = makeEnv();   // immediate fallback so metal is never black
+
+  // upgrade to a real HDRI studio environment when the loader is available
+  if (THREE.RGBELoader) {
+    try {
+      new THREE.RGBELoader().load(
+        'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/equirectangular/royal_esplanade_1k.hdr',
+        function (hdr) {
+          hdr.mapping = THREE.EquirectangularReflectionMapping;
+          const pm = new THREE.PMREMGenerator(renderer);
+          pm.compileEquirectangularShader();
+          const env = pm.fromEquirectangular(hdr).texture;
+          scene.environment = env;
+          hdr.dispose(); pm.dispose();
+        },
+        undefined,
+        function () { /* HDR blocked → keep gradient env */ }
+      );
+    } catch (e) { /* keep gradient env */ }
+  }
 
   /* ---- materials ---- */
   const M = {
@@ -467,8 +486,19 @@ console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight
     pcb:     new THREE.MeshStandardMaterial({ color: 0x123a18, metalness: 0.3,  roughness: 0.6 }),
     dark:    new THREE.MeshStandardMaterial({ color: 0x0e0b06, metalness: 0.4,  roughness: 0.7 }),
     accent:  new THREE.MeshStandardMaterial({ color: 0x3a2606, metalness: 0.5,  roughness: 0.4,
-                                              emissive: 0xf0a830, emissiveIntensity: 1.1 }),
+                                              emissive: 0xf0a830, emissiveIntensity: 1.8 }),
   };
+
+  /* ---- post-processing: UnrealBloom for cinematic highlights ---- */
+  let composer = null, bloomPass = null;
+  if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
+    try {
+      composer = new THREE.EffectComposer(renderer);
+      composer.addPass(new THREE.RenderPass(scene, camera));
+      bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.45, 0.82);
+      composer.addPass(bloomPass);
+    } catch (e) { composer = null; }
+  }
 
   const root = new THREE.Group();          // everything (gets scroll rotation)
   scene.add(root);
@@ -678,6 +708,7 @@ console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
     placeCamera();
+    if (composer) { composer.setPixelRatio(DPR); composer.setSize(w, h); }
   }
   resize();
   window.addEventListener('resize', resize, { passive: true });
@@ -705,7 +736,7 @@ console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight
       p.group.position.copy(p.home).addScaledVector(p.dir, curExplode * 3.1);
     });
 
-    renderer.render(scene, camera);
+    if (composer) composer.render(); else renderer.render(scene, camera);
 
     // project labels
     const rect = stage.getBoundingClientRect();
