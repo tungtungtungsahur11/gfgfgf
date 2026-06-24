@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERDA — TitanCut Akku-Heckenschere</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- HDRI loader + UnrealBloom post-processing (loaded in dependency order; all optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+</head>
+<body>
+
+  <!-- ─── NAVIGATION ─────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="logo">VERDA<span class="dot">.</span></a>
+      <ul class="nav-links">
+        <li><a href="#product">Produkt</a></li>
+        <li><a href="#anatomy">Aufbau</a></li>
+        <li><a href="#features">Vorteile</a></li>
+        <li><a href="#how">So funktioniert's</a></li>
+        <li><a href="#market">Für wen</a></li>
+        <li><a href="#pricing">Preise</a></li>
+        <li><a href="#contact" class="nav-cta">Angebot anfragen</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobiles Menü -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#product" class="mob-link">Produkt</a></li>
+      <li><a href="#anatomy" class="mob-link">Aufbau</a></li>
+      <li><a href="#features" class="mob-link">Vorteile</a></li>
+      <li><a href="#how" class="mob-link">So funktioniert's</a></li>
+      <li><a href="#market" class="mob-link">Für wen</a></li>
+      <li><a href="#pricing" class="mob-link">Preise</a></li>
+      <li><a href="#contact" class="mob-link">Kontakt</a></li>
+    </ul>
+  </div>
+
+  <!-- ─── HERO ───────────────────────────────────────────────────── -->
+  <section id="hero" class="hero-section">
+    <canvas id="hedgeCanvas"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Wir präsentieren</p>
+      <h1 class="hero-title">
+        <span class="word">Titan</span>
+        <span class="word accent">Cut</span>
+      </h1>
+      <p class="hero-sub">SCHARF · LEISE · KABELLOS</p>
+      <p class="hero-desc">Die Akku-Heckenschere für den perfekten Schnitt.<br>Mehr Leistung. Weniger Lärm. Null Kabelsalat.</p>
+      <div class="hero-actions">
+        <a href="#product" class="btn btn-primary">Entdecken</a>
+        <a href="#pricing" class="btn btn-ghost">Preise ansehen</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scrollen</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── TAGLINE STRIP ──────────────────────────────────────────── -->
+  <section class="tagline-section">
+    <div class="tagline-inner">
+      <div class="tagline-track">
+        <span>Präzision &nbsp;·&nbsp;</span>
+        <span>Ausdauer &nbsp;·&nbsp;</span>
+        <span>Leistung &nbsp;·&nbsp;</span>
+        <span>Komfort &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+        <span>Präzision &nbsp;·&nbsp;</span>
+        <span>Ausdauer &nbsp;·&nbsp;</span>
+        <span>Leistung &nbsp;·&nbsp;</span>
+        <span>Komfort &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROBLEM ────────────────────────────────────────────────── -->
+  <section id="problem" class="problem-section">
+    <div class="container">
+      <p class="section-label">Das Problem</p>
+      <h2 class="reveal-text">Heckenschneiden ist<br><span class="accent">oft eine Qual.</span></h2>
+      <div class="problem-grid">
+        <div class="problem-card" data-delay="0">
+          <div class="problem-icon">🔌</div>
+          <h3>Kabel im Weg</h3>
+          <p>Kabelgebundene Modelle schränken die Bewegung ein, verheddern sich im Strauch und brauchen immer eine Steckdose in der Nähe.</p>
+        </div>
+        <div class="problem-card" data-delay="0.15">
+          <div class="problem-icon">🔊</div>
+          <h3>Viel zu laut</h3>
+          <p>Benzin-Heckenscheren dröhnen durch die ganze Nachbarschaft und stoßen Abgase aus — Schneiden wird zum Stressfaktor.</p>
+        </div>
+        <div class="problem-card" data-delay="0.3">
+          <div class="problem-icon">💪</div>
+          <h3>Schwer &amp; ermüdend</h3>
+          <p>Hohes Gewicht und starke Vibrationen führen schon nach kurzer Zeit zu müden Armen und ungenauen Schnitten.</p>
+        </div>
+        <div class="problem-card" data-delay="0.45">
+          <div class="problem-icon">🪫</div>
+          <h3>Schnell leer</h3>
+          <p>Viele Akkugeräte geben mitten in der Hecke auf — zu kurze Laufzeit und ewig lange Ladezeiten bremsen den Fortschritt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRODUKT REVEAL ─────────────────────────────────────────── -->
+  <section id="product" class="product-section">
+    <div class="product-sticky">
+      <div class="product-text-panel">
+        <p class="section-label">Die Lösung</p>
+        <h2>Titan<span class="accent">Cut</span></h2>
+        <p class="product-tagline">von VERDA</p>
+        <p class="product-desc">
+          Die kabellose Akku-Heckenschere mit lasergeschliffenen Diamantmessern und bürstenlosem Motor. Mühelos durch dicke Äste, leise wie ein Flüstern — und federleicht in der Hand.
+        </p>
+        <ul class="product-bullets">
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Bürstenloser Brushless-Motor für volle Leistung</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> 24&nbsp;mm Schnittstärke — auch für dicke Triebe</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> 60&nbsp;cm lasergeschliffenes Diamantmesser</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Bis zu 80&nbsp;Minuten Laufzeit pro Akkuladung</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Anti-Vibration &amp; nur 2,9&nbsp;kg leicht</li>
+        </ul>
+      </div>
+      <div class="product-visual-panel">
+        <div class="trimmer-wrap">
+          <div class="trimmer-glow"></div>
+          <div class="leaf-particles" id="leafParticles"></div>
+          <div class="trimmer">
+            <svg class="trimmer-svg" viewBox="0 0 440 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Akku -->
+              <rect x="300" y="118" width="74" height="46" rx="8" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+              <rect x="312" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="322" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="332" y="128" width="6" height="14" rx="2" fill="#c07d1c"/>
+              <!-- Motorgehäuse -->
+              <path d="M250 70 Q252 56 268 56 L330 56 Q352 56 352 84 L352 124 Q352 140 332 140 L268 140 Q250 140 250 122 Z"
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
+              <!-- Lüftungsschlitze -->
+              <path d="M276 74 L276 92 M286 74 L286 92 M296 74 L296 92 M306 74 L306 92" stroke="#141009" stroke-width="2" stroke-linecap="round"/>
+              <!-- Griff -->
+              <path d="M300 56 Q320 18 358 30 Q392 42 372 90 L356 86 Q368 54 350 48 Q328 42 318 64 Z"
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
+              <!-- Schalter -->
+              <rect x="262" y="96" width="26" height="10" rx="5" fill="#f0a830"/>
+              <!-- Frontschutz -->
+              <path d="M250 96 L236 78 L236 118 Z" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+
+              <!-- BLADE BASE -->
+              <rect x="20" y="92" width="232" height="14" rx="6" fill="#251d10" stroke="#3d3019" stroke-width="1.5"/>
+
+              <!-- BOTTOM BLADE LAYER -->
+              <g class="blade-layer blade-bottom" fill="#c9d6cd" stroke="#9fb0a6" stroke-width="1">
+                <path d="M28 104 l10 -14 l10 14 Z"/>
+                <path d="M58 104 l10 -14 l10 14 Z"/>
+                <path d="M88 104 l10 -14 l10 14 Z"/>
+                <path d="M118 104 l10 -14 l10 14 Z"/>
+                <path d="M148 104 l10 -14 l10 14 Z"/>
+                <path d="M178 104 l10 -14 l10 14 Z"/>
+                <path d="M208 104 l10 -14 l10 14 Z"/>
+              </g>
+              <!-- TOP BLADE LAYER -->
+              <g class="blade-layer blade-top" fill="#eef4ef" stroke="#b9c8bf" stroke-width="1">
+                <path d="M40 94 l10 14 l10 -14 Z"/>
+                <path d="M70 94 l10 14 l10 -14 Z"/>
+                <path d="M100 94 l10 14 l10 -14 Z"/>
+                <path d="M130 94 l10 14 l10 -14 Z"/>
+                <path d="M160 94 l10 14 l10 -14 Z"/>
+                <path d="M190 94 l10 14 l10 -14 Z"/>
+                <path d="M220 94 l10 14 l10 -14 Z"/>
+              </g>
+              <!-- Blade tip -->
+              <path d="M20 99 L8 99 L12 92 L20 92 Z" fill="#c9d6cd"/>
+
+              <defs>
+                <linearGradient id="bodyGrad" x1="250" y1="56" x2="352" y2="140" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#33291a"/>
+                  <stop offset="1" stop-color="#181208"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="power-beam"></div>
+          </div>
+          <div class="spec-badge">
+            <span class="spec-num"></span><span class="spec-val" id="specVal">0</span><span class="spec-sym">&nbsp;mm</span>
+            <p>Schnittstärke</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AUFBAU / MECHANISMUS (scroll-driven explosion) ─────────── -->
+  <section id="anatomy" class="mech-section">
+    <div class="mech-sticky">
+      <!-- left: changing info -->
+      <div class="mech-info">
+        <p class="mech-eyebrow">Aufbau</p>
+        <span class="mech-index" id="mechIndex">01</span>
+        <h2 class="mech-title" id="mechTitle">ANTRIEB</h2>
+        <p class="mech-sub" id="mechSub">Akku und bürstenloser Motor liefern die Kraft — kabellos und konstant.</p>
+        <div class="mech-readout" id="mechReadout">
+          <div><span>Spannung</span><b>18 V</b></div>
+          <div><span>Akku</span><b>4,0 Ah</b></div>
+          <div><span>Motor</span><b>Brushless</b></div>
+        </div>
+      </div>
+
+      <!-- right: the actual hedge trimmer exploding into labelled parts -->
+      <div class="mech-stage">
+        <div class="mech-core" id="mechCore"></div>
+        <div class="mech-rings"></div>
+
+        <!-- echtes 3D-Modell (WebGL); SVG unten dient als Fallback -->
+        <div class="mech3d-wrap" id="mech3dWrap">
+          <canvas id="mech3d"></canvas>
+          <div class="mech-labels" id="mechLabels"></div>
+        </div>
+
+        <svg class="xtrimmer" id="xtrimmer" viewBox="-150 -40 900 480" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="gSteel" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#fbf5e6"/><stop offset=".32" stop-color="#d3c191"/>
+ <stop offset=".55" stop-color="#8c7a4f"/><stop offset=".7" stop-color="#d8c79b"/>
+ <stop offset="1" stop-color="#efe2c2"/></linearGradient>
+<linearGradient id="gHous" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#50432b"/><stop offset=".5" stop-color="#2a2012"/>
+ <stop offset="1" stop-color="#120c05"/></linearGradient>
+<linearGradient id="gCopper" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#ffe1a8"/><stop offset=".45" stop-color="#f0a830"/>
+ <stop offset="1" stop-color="#79460f"/></linearGradient>
+<radialGradient id="gGear" cx="40%" cy="34%" r="75%">
+ <stop offset="0" stop-color="#cdbd8c"/></radialGradient>
+<radialGradient id="gGear2" cx="40%" cy="34%" r="75%">
+ <stop offset="0" stop-color="#cdbd8c"/><stop offset=".6" stop-color="#6a5836"/>
+ <stop offset="1" stop-color="#291f0f"/></radialGradient>
+<radialGradient id="gRotor" cx="42%" cy="36%" r="70%">
+ <stop offset="0" stop-color="#fff0cf"/><stop offset=".3" stop-color="#dcc899"/>
+ <stop offset=".7" stop-color="#7c6738"/><stop offset="1" stop-color="#382a13"/></radialGradient>
+<linearGradient id="gCell" x1="0" y1="0" x2="1" y2="0">
+ <stop offset="0" stop-color="#3a2f1b"/><stop offset=".18" stop-color="#e7d6a8"/>
+ <stop offset=".5" stop-color="#8a7647"/><stop offset=".6" stop-color="#6f5d36"/>
+ <stop offset="1" stop-color="#241a0c"/></linearGradient>
+<radialGradient id="gBolt" cx="38%" cy="32%" r="70%">
+ <stop offset="0" stop-color="#d9c896"/><stop offset="1" stop-color="#4a3a1e"/></radialGradient>
+<filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+ <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/></filter>
+<filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+ <feGaussianBlur stdDeviation="3.4" result="b"/><feMerge>
+ <feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs><g class="xpart" data-dx="-150" data-dy="40" filter="url(#soft)"><rect x="40" y="205" width="250" height="16" rx="7" fill="url(#gHous)" stroke="#2a2012" stroke-width="1.5"/><rect x="44" y="206" width="242" height="4" rx="2" fill="#ffffff" opacity="0.16"/><circle cx="70" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="104" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="138" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="172" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="206" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="240" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="274" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><rect x="150" y="211" width="120" height="5" rx="2.5" fill="#000" opacity="0.45"/><g fill="url(#gSteel)" stroke="#8d7c52" stroke-width=".8"><path d="M48 221 l10 -16 l10 16 Z"/><path d="M78 221 l10 -16 l10 16 Z"/><path d="M108 221 l10 -16 l10 16 Z"/><path d="M138 221 l10 -16 l10 16 Z"/><path d="M168 221 l10 -16 l10 16 Z"/><path d="M198 221 l10 -16 l10 16 Z"/><path d="M228 221 l10 -16 l10 16 Z"/><path d="M258 221 l10 -16 l10 16 Z"/><path d="M288 221 l10 -16 l10 16 Z"/></g><g fill="url(#gSteel)" stroke="#b6a576" stroke-width=".8"><path d="M62 205 l10 16 l10 -16 Z"/><path d="M92 205 l10 16 l10 -16 Z"/><path d="M122 205 l10 16 l10 -16 Z"/><path d="M152 205 l10 16 l10 -16 Z"/><path d="M182 205 l10 16 l10 -16 Z"/><path d="M212 205 l10 16 l10 -16 Z"/><path d="M242 205 l10 16 l10 -16 Z"/><path d="M272 205 l10 16 l10 -16 Z"/></g><path d="M40 213 L24 213 L30 205 L40 205 Z" fill="url(#gSteel)"/><text class="xlabel" x="60" y="250">① Messer (Ober-/Untermesser)</text></g><g class="xpart" data-dx="-30" data-dy="-78" filter="url(#soft)"><path d="M300 209 L284 188 L284 232 Z" fill="url(#gHous)" stroke="#2a2012" stroke-width="2"/><path d="M299 206 L286 192 L286 200 Z" fill="#ffffff" opacity="0.16"/><path d="M300 200 L312 200" stroke="#f0a830" stroke-width="2"/><text class="xlabel" x="250" y="182">② Handschutz</text></g><g class="xpart" data-dx="-10" data-dy="118" filter="url(#soft)"><circle cx="320" cy="213" r="20" fill="url(#gGear2)" stroke="#2a2012" stroke-width="2"/><circle cx="314" cy="207" r="8" fill="#ffffff" opacity="0.16"/><path d="M328 207 L292 214" stroke="url(#gCopper)" stroke-width="6" stroke-linecap="round"/><circle cx="328" cy="207" r="5" fill="#f0a830" filter="url(#glow)"/><circle cx="292" cy="214" r="4.5" fill="none" stroke="#f0a830" stroke-width="2"/><circle cx="320" cy="213" r="3" fill="#6a5226"/><text class="xlabel" x="292" y="268">③ Exzenter &amp; Pleuel</text></g><g class="xpart" data-dx="-44" data-dy="86" filter="url(#soft)"><g class="xgear"><path d="M 393.8,201.8 401.9,202.9 401.9,207.1 393.8,208.2 393.6,209.4 400.8,213.3 399.4,217.2 391.4,215.5 390.7,216.5 396.3,222.6 393.6,225.8 386.6,221.5 385.7,222.2 388.8,229.9 385.2,232.0 380.1,225.5 378.9,225.9 379.3,234.1 375.1,234.8 372.6,227.0 371.4,227.0 368.9,234.8 364.7,234.1 365.1,225.9 363.9,225.5 358.8,232.0 355.2,229.9 358.3,222.2 357.4,221.5 350.4,225.8 347.7,222.6 353.3,216.5 352.6,215.5 344.6,217.2 343.2,213.3 350.4,209.4 350.2,208.2 342.1,207.1 342.1,202.9 350.2,201.8 350.4,200.6 343.2,196.7 344.6,192.8 352.6,194.5 353.3,193.5 347.7,187.4 350.4,184.2 357.4,188.5 358.3,187.8 355.2,180.1 358.8,178.0 363.9,184.5 365.1,184.1 364.7,175.9 368.9,175.2 371.4,183.0 372.6,183.0 375.1,175.2 379.3,175.9 378.9,184.1 380.1,184.5 385.2,178.0 388.8,180.1 385.7,187.8 386.6,188.5 393.6,184.2 396.3,187.4 390.7,193.5 391.4,194.5 399.4,192.8 400.8,196.7 393.6,200.6 Z" fill="url(#gGear2)" stroke="#2a2012" stroke-width="1.2"/><circle cx="372" cy="205" r="13" fill="url(#gHous)" stroke="rgba(240,168,48,.45)" stroke-width="1.3"/><line x1="372" y1="205" x2="384.0" y2="205.0" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><line x1="372" y1="205" x2="366.0" y2="215.4" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><line x1="372" y1="205" x2="365.9" y2="194.7" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><circle cx="366" cy="199" r="6" fill="#ffffff" opacity="0.16"/><circle cx="372" cy="205" r="4" fill="#f0a830"/></g><g class="xgear2"><path d="M 417.7,193.7 421.9,194.3 421.9,197.7 417.7,198.3 417.4,199.2 420.2,202.4 418.0,204.9 414.4,202.7 413.6,203.1 413.7,207.4 410.4,208.0 409.1,203.9 408.2,203.8 405.5,207.1 402.6,205.5 404.2,201.5 403.6,200.8 399.4,201.6 398.3,198.5 402.0,196.4 402.0,195.6 398.3,193.5 399.4,190.4 403.6,191.2 404.2,190.5 402.6,186.5 405.5,184.9 408.2,188.2 409.1,188.1 410.4,184.0 413.7,184.6 413.6,188.9 414.4,189.3 418.0,187.1 420.2,189.6 417.4,192.8 Z" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><circle cx="410" cy="196" r="3" fill="#1d160b"/></g><text class="xlabel" x="330" y="150">④ Getriebe &amp; Ritzel</text></g><g class="xpart" data-dx="0" data-dy="-118" filter="url(#soft)"><circle cx="470" cy="190" r="44" fill="url(#gHous)" stroke="#2a2012" stroke-width="2"/><circle cx="470" cy="190" r="44" fill="none" stroke="rgba(240,168,48,.20)" stroke-width="1"/><circle cx="470" cy="190" r="20" fill="#0f0a04"/><g transform="rotate(0 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(60 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(120 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(180 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(240 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(300 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><text class="xlabel" x="372" y="92">⑤ Stator (Wicklung)</text></g><g class="xpart" data-dx="40" data-dy="-40" filter="url(#soft)"><circle cx="470" cy="190" r="26" fill="url(#gRotor)" stroke="#2a2012" stroke-width="2"/><line x1="493.0" y1="190.0" x2="487.0" y2="190.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="491.2" y1="198.8" x2="485.7" y2="196.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="486.3" y1="206.3" x2="482.0" y2="202.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="478.8" y1="211.2" x2="476.5" y2="205.7" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="470.0" y1="213.0" x2="470.0" y2="207.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="461.2" y1="211.2" x2="463.5" y2="205.7" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="453.7" y1="206.3" x2="458.0" y2="202.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="448.8" y1="198.8" x2="454.3" y2="196.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="447.0" y1="190.0" x2="453.0" y2="190.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="448.8" y1="181.2" x2="454.3" y2="183.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="453.7" y1="173.7" x2="458.0" y2="178.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="461.2" y1="168.8" x2="463.5" y2="174.3" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="470.0" y1="167.0" x2="470.0" y2="173.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="478.8" y1="168.8" x2="476.5" y2="174.3" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="486.3" y1="173.7" x2="482.0" y2="178.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="491.2" y1="181.2" x2="485.7" y2="183.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><circle cx="462" cy="182" r="7" fill="#ffffff" opacity="0.16"/><circle cx="470" cy="190" r="6" fill="#f0a830" filter="url(#glow)"/><rect x="468" y="181" width="4" height="6" fill="#1d160b"/><text class="xlabel" x="520" y="150">⑥ Rotor &amp; Welle</text></g><g class="xpart" data-dx="96" data-dy="4" filter="url(#soft)"><rect x="430" y="138" width="120" height="104" rx="20" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><rect x="438" y="144" width="104" height="10" rx="5" fill="#ffffff" opacity="0.16"/><line x1="444" y1="150" x2="444" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="445" y1="150" x2="445" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="456" y1="150" x2="456" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="457" y1="150" x2="457" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="468" y1="150" x2="468" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="469" y1="150" x2="469" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="480" y1="150" x2="480" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="481" y1="150" x2="481" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="492" y1="150" x2="492" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="493" y1="150" x2="493" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="504" y1="150" x2="504" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="505" y1="150" x2="505" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="516" y1="150" x2="516" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="517" y1="150" x2="517" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="528" y1="150" x2="528" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="529" y1="150" x2="529" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="540" y1="150" x2="540" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="541" y1="150" x2="541" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><circle cx="442" cy="150" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="538" cy="150" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="442" cy="230" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="538" cy="230" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><text class="xlabel" x="470" y="300">⑦ Motorgehäuse</text></g><g class="xpart" data-dx="70" data-dy="-86" filter="url(#soft)"><path d="M452 132 Q470 70 540 78 Q604 86 580 168 L556 162 Q576 96 532 92 Q486 90 478 138 Z" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><path d="M470 120 Q484 86 532 88" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="4" stroke-linecap="round"/><path d="M486 118 Q500 94 532 98" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 112 Q500 88 532 92" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 106 Q500 82 532 86" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 100 Q500 76 532 80" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 94 Q500 70 532 74" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><rect x="430" y="196" width="26" height="12" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><path d="M456 202 Q470 210 470 224" fill="none" stroke="#f0a830" stroke-width="2" stroke-dasharray="3 3"/><rect x="500" y="150" width="30" height="18" rx="3" fill="#0f1c0a" stroke="#2a2012" stroke-width="1"/><line x1="504" y1="156" x2="526" y2="156" stroke="rgba(240,168,48,.45)" stroke-width="1"/><line x1="504" y1="162" x2="526" y2="162" stroke="rgba(240,168,48,.45)" stroke-width="1"/><text class="xlabel" x="556" y="52">⑧ Griff, Schalter &amp; Elektronik</text></g><g class="xpart" data-dx="110" data-dy="86" filter="url(#soft)"><rect x="452" y="250" width="120" height="60" rx="10" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><rect x="458" y="254" width="108" height="7" rx="3" fill="#ffffff" opacity="0.16"/><rect x="458" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="460" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="463" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="480" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="482" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="485" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="502" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="504" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="507" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="524" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="526" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="529" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="546" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="548" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="551" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="468" y="244" width="8" height="8" rx="2" fill="#f0a830"/><rect x="486" y="244" width="8" height="8" rx="2" fill="#f0a830"/><rect x="548" y="244" width="14" height="8" rx="2" fill="#6a5226"/><text class="xlabel" x="470" y="330">⑨ Akku (Lithium-Zellen)</text></g></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS ──────────────────────────────────────────────────── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-num" data-target="80">0</span><span class="stat-unit">min</span>
+          <p class="stat-label">Laufzeit pro Ladung</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="60">0</span><span class="stat-unit">cm</span>
+          <p class="stat-label">Messerlänge</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="24">0</span><span class="stat-unit">mm</span>
+          <p class="stat-label">Schnittstärke</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="2900">0</span><span class="stat-unit">g</span>
+          <p class="stat-label">Gewicht</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES ───────────────────────────────────────────────── -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <p class="section-label">Technik</p>
+      <h2 class="reveal-text">Gebaut für den<br><span class="accent">perfekten Schnitt.</span></h2>
+      <div class="features-grid">
+
+        <div class="feature-card large" data-index="0">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="20" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M30 14 L30 10 M30 50 L30 46 M14 30 L10 30 M50 30 L46 30 M19 19 L16 16 M44 44 L41 41 M41 19 L44 16 M16 44 L19 41" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="6" fill="currentColor" opacity="0.3"/>
+                <circle cx="30" cy="30" r="2.5" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Bürstenloser Brushless-Motor</h3>
+          <p>Mehr Drehmoment, weniger Verschleiß und ein deutlich höherer Wirkungsgrad. Der Motor liefert konstante Leistung — auch bei dicken Ästen — und hält ein Geräteleben lang.</p>
+        </div>
+
+        <div class="feature-card" data-index="1">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M10 38 L50 38" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M14 38 L18 30 L22 38 M22 38 L26 30 L30 38 M30 38 L34 30 L38 38 M38 38 L42 30 L46 38" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                <path d="M14 42 L18 50 L22 42 M22 42 L26 50 L30 42 M30 42 L34 50 L38 42 M38 42 L42 50 L46 42" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Diamantgeschliffene Messer</h3>
+          <p>Lasergeschnittene, diamantgeschärfte Klingen sorgen für saubere Schnitte und bleiben deutlich länger scharf als herkömmliche Messer.</p>
+        </div>
+
+        <div class="feature-card" data-index="2">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="20" y="10" width="20" height="40" rx="4" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="25" y="6" width="10" height="5" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M25 20 L35 20 M25 26 L35 26 M25 32 L35 32" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M30 38 L30 44" stroke="#f0a830" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Wechselakku-System</h3>
+          <p>Der 4,0&nbsp;Ah Lithium-Ionen-Akku ist in 60&nbsp;Minuten geladen und passt in alle Geräte der VERDA-Plattform. Ein Akku für die ganze Gartenpflege.</p>
+        </div>
+
+        <div class="feature-card" data-index="3">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M30 8 C30 8 14 20 14 34 C14 43 21 50 30 50 C39 50 46 43 46 34 C46 20 30 8 30 8 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M30 22 C30 22 24 28 24 35" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Leise &amp; vibrationsarm</h3>
+          <p>Nur 86&nbsp;dB statt dröhnendem Benzinmotor. Die Anti-Vibrations-Aufhängung schont Hände und Gelenke — auch bei langen Heckenzügen.</p>
+        </div>
+
+        <div class="feature-card large right" data-index="4">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M20 50 Q20 30 30 12 Q40 30 40 50" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M30 12 L30 50" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M30 24 L22 30 M30 24 L38 30 M30 34 L23 40 M30 34 L37 40" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Ergonomie &amp; Sicherheit</h3>
+          <p>Drehbarer Soft-Grip-Griff, Zweihand-Sicherheitsschaltung und ein robuster Handschutz. Die TitanCut liegt ausbalanciert in der Hand und stoppt das Messer in Sekundenbruchteilen, sobald Sie loslassen.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SO FUNKTIONIERT'S ──────────────────────────────────────── -->
+  <section id="how" class="how-section">
+    <div class="container">
+      <p class="section-label">Ablauf</p>
+      <h2 class="reveal-text">Einfach.<br><span class="accent">In drei Schritten.</span></h2>
+      <div class="steps-wrap">
+        <div class="steps-line">
+          <div class="steps-progress" id="stepsProgress"></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Akku einsetzen</h3>
+            <p>Den geladenen Lithium-Ionen-Akku einklicken — fertig. Kein Benzin mischen, kein Kabel suchen, kein Anwerfen. In drei Sekunden einsatzbereit.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <rect x="30" y="18" width="20" height="44" rx="4" stroke="currentColor" stroke-width="2"/>
+                <rect x="35" y="13" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M40 30 L36 40 L44 40 L40 50" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Sicher starten</h3>
+            <p>Mit beiden Händen den Sicherheitsschalter drücken. Der Brushless-Motor läuft sofort auf volle Drehzahl — leise und ohne Verzögerung.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="24" stroke="currentColor" stroke-width="2"/>
+                <path d="M40 28 L40 40 L48 46" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Schneiden &amp; genießen</h3>
+            <p>Führen Sie die TitanCut ruhig an der Hecke entlang. Die Diamantmesser ziehen mühelos durch — für eine gerade, saubere Kante ohne Nachschneiden.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <path d="M16 52 L40 36 L48 44 L64 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M64 28 L58 28 M64 28 L64 34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16 60 L64 60" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── VERGLEICH ──────────────────────────────────────────────── -->
+  <section class="advantage-section">
+    <div class="container">
+      <p class="section-label">Vergleich</p>
+      <h2 class="reveal-text">Warum die <span class="accent">TitanCut</span><br>die bessere Wahl ist.</h2>
+      <div class="compare-table">
+        <div class="compare-col header-col">
+          <div class="compare-cell header-cell"></div>
+          <div class="compare-cell">Kabellos &amp; flexibel</div>
+          <div class="compare-cell">Leise (unter 90 dB)</div>
+          <div class="compare-cell">24 mm Schnittstärke</div>
+          <div class="compare-cell">Unter 3 kg Gewicht</div>
+          <div class="compare-cell">Brushless-Motor</div>
+          <div class="compare-cell">Wechselakku-System</div>
+        </div>
+        <div class="compare-col volt-col">
+          <div class="compare-cell header-cell volt-header">TitanCut<br><small>von VERDA</small></div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Benzin-Schere</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Kabel-Schere</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">—</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FÜR WEN ────────────────────────────────────────────────── -->
+  <section id="market" class="market-section">
+    <div class="container">
+      <p class="section-label">Für wen</p>
+      <h2 class="reveal-text">Für wen ist die<br><span class="accent">TitanCut?</span></h2>
+      <div class="market-grid">
+        <div class="market-card b2c">
+          <div class="market-badge">Privat</div>
+          <h3>Hobbygärtner</h3>
+          <ul>
+            <li>Eigenheim- und Gartenbesitzer</li>
+            <li>Hecken bis zu mittlerer Höhe</li>
+            <li>Wert auf leises, sauberes Arbeiten</li>
+            <li>Keine Lust auf Benzin und Kabel</li>
+            <li>Suchen ein langlebiges Qualitätsgerät</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+        <div class="market-card b2b">
+          <div class="market-badge">Profi</div>
+          <h3>Garten- &amp; Landschaftsbau</h3>
+          <ul>
+            <li>Gärtnereien und Landschaftsbetriebe</li>
+            <li>Kommunale Grünflächenpflege</li>
+            <li>Hausmeisterservices &amp; Facility-Teams</li>
+            <li>Langer Dauereinsatz mit Wechselakkus</li>
+            <li>Fokus auf Robustheit und Service</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PREISE ─────────────────────────────────────────────────── -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <p class="section-label">Preise</p>
+      <h2 class="reveal-text">Transparente<br><span class="accent">Preise.</span></h2>
+      <div class="pricing-grid">
+        <div class="price-card" data-delay="0">
+          <div class="price-label">Nur Gerät</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">149</span>
+          </div>
+          <div class="price-desc">Ohne Akku &amp; Ladegerät</div>
+          <ul class="price-features">
+            <li>TitanCut Akku-Heckenschere</li>
+            <li>60 cm Diamantmesser</li>
+            <li>Handschutz &amp; Messerköcher</li>
+            <li>Kompatibel mit VERDA-Akkus</li>
+            <li>2 Jahre Garantie</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Anfragen</a>
+        </div>
+        <div class="price-card featured" data-delay="0.15">
+          <div class="price-popular">Empfohlen</div>
+          <div class="price-label">Komplett-Set</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">229</span>
+          </div>
+          <div class="price-desc">Inkl. Akku &amp; Schnellladegerät</div>
+          <ul class="price-features">
+            <li>Alles aus „Nur Gerät“</li>
+            <li>4,0 Ah Lithium-Ionen-Akku</li>
+            <li>60-Minuten-Schnellladegerät</li>
+            <li>Aufbewahrungstasche</li>
+            <li>3 Jahre erweiterte Garantie</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Jetzt anfragen</a>
+        </div>
+        <div class="price-card" data-delay="0.3">
+          <div class="price-label">Profi-Paket (B2B)</div>
+          <div class="price-amount">
+            <span class="price-currency">ab </span>
+            <span class="price-num">Individuell</span>
+          </div>
+          <div class="price-desc">Mengenrabatte für Betriebe</div>
+          <ul class="price-features">
+            <li>Alles aus dem Komplett-Set</li>
+            <li>Zwei Wechselakkus pro Gerät</li>
+            <li>Persönlicher Ansprechpartner</li>
+            <li>Vor-Ort-Service &amp; Wartung</li>
+            <li>Priorisierter Support</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Angebot anfragen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TECHNISCHE DATEN ───────────────────────────────────────── -->
+  <section class="specs-section">
+    <div class="container">
+      <p class="section-label">Technische Daten</p>
+      <h2 class="reveal-text">Alles im<br><span class="accent">Detail.</span></h2>
+      <div class="specs-grid">
+        <div class="spec-item" data-spec="1">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Antrieb</span>
+          <h3>Brushless 18&nbsp;V</h3>
+          <p>Wartungsarmer, bürstenloser Motor mit hohem Wirkungsgrad und konstantem Drehmoment.</p>
+        </div>
+        <div class="spec-item" data-spec="2">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Messer</span>
+          <h3>60&nbsp;cm · 24&nbsp;mm</h3>
+          <p>Lasergeschnittenes, diamantgeschliffenes Doppelmesser mit 24&nbsp;mm Zahnabstand.</p>
+        </div>
+        <div class="spec-item" data-spec="3">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Akku &amp; Laufzeit</span>
+          <h3>4,0&nbsp;Ah · 80&nbsp;min</h3>
+          <p>Lithium-Ionen-Wechselakku, voll geladen in 60&nbsp;Minuten, bis zu 80&nbsp;Minuten Schnittzeit.</p>
+        </div>
+        <div class="spec-item" data-spec="4">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Gewicht &amp; Lärm</span>
+          <h3>2,9&nbsp;kg · 86&nbsp;dB</h3>
+          <p>Leichtes, ausbalanciertes Gehäuse mit Anti-Vibration und angenehm niedrigem Geräuschpegel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── NACHHALTIGKEIT ─────────────────────────────────────────── -->
+  <section class="sustainability-section">
+    <div class="container">
+      <p class="section-label">Nachhaltigkeit</p>
+      <h2 class="reveal-text">Gut für den Garten.<br><span class="accent">Gut für die Umwelt.</span></h2>
+      <div class="sustain-grid">
+        <div class="sustain-card" data-delay="0">
+          <div class="sustain-icon">🌱</div>
+          <h3>Emissionsfrei</h3>
+          <p>Kein Benzin, keine Abgase. Mit Ökostrom geladen, schneiden Sie komplett CO₂-neutral — leise und sauber.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.15">
+          <div class="sustain-icon">🔋</div>
+          <h3>Langlebig</h3>
+          <p>Robuste Bauweise, austauschbarer Akku und ein plattformweites Akku-System verlängern die Lebensdauer und reduzieren Elektroschrott.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.3">
+          <div class="sustain-icon">♻️</div>
+          <h3>Reparierbar</h3>
+          <p>Ersatzmesser und Verschleißteile sind einzeln erhältlich. Reparieren statt wegwerfen — für eine ehrliche Kreislaufwirtschaft.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── KONTAKT ────────────────────────────────────────────────── -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <p class="section-label">Kontakt</p>
+      <h2 class="reveal-text">Bereit für den<br><span class="accent">perfekten Schnitt?</span></h2>
+      <p class="contact-sub">Schreiben Sie uns für eine persönliche Beratung oder ein unverbindliches Angebot.</p>
+      <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Max Mustermann" required />
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" placeholder="max@beispiel.de" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="interest">Interesse</label>
+          <select id="interest" name="interest">
+            <option value="private">Privat — TitanCut kaufen</option>
+            <option value="set">Komplett-Set mit Akku</option>
+            <option value="b2b">Betrieb — Profi-Paket / Mengen</option>
+            <option value="dealer">Händler / Partner</option>
+            <option value="other">Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" placeholder="Beschreiben Sie kurz Ihr Anliegen…" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span class="btn-text">Nachricht senden</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <div class="form-success" id="formSuccess">
+          <span>✓</span> Ihre Nachricht wurde gesendet. Wir melden uns in Kürze!
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#hero" class="logo">VERDA<span class="dot">.</span></a>
+          <p>Scharf. Leise. Kabellos.<br>Werkzeuge für die moderne Gartenpflege.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Produkt</h4>
+            <ul>
+              <li><a href="#product">TitanCut</a></li>
+              <li><a href="#features">Technik</a></li>
+              <li><a href="#how">Bedienung</a></li>
+              <li><a href="#pricing">Preise</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Unternehmen</h4>
+            <ul>
+              <li><a href="#market">Für wen</a></li>
+              <li><a href="#problem">Mission</a></li>
+              <li><a href="#">Nachhaltigkeit</a></li>
+              <li><a href="#contact">Kontakt</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><a href="#">Impressum</a></li>
+              <li><a href="#">Datenschutz</a></li>
+              <li><a href="#">AGB</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 VERDA — TitanCut. Alle Rechte vorbehalten.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

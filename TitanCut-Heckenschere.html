@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERDA — TitanCut Akku-Heckenschere</title>
+  <style>
+/* ─── RESET & ROOT ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #04080a;
+  --bg-2:      #0c0b09;
+  --bg-3:      #141009;
+  --accent:    #f0a830;
+  --accent-2:  #c07d1c;
+  --text:      #e6f0e8;
+  --text-dim:  #88a890;
+  --border:    rgba(255,255,255,0.07);
+  --glow:      rgba(240,168,48,0.18);
+  --font:      -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* ─── UTILITY ───────────────────────────────────────────────────── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.accent { color: var(--accent); }
+.section-label {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.section-label.visible { opacity: 1; transform: none; }
+
+h2 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+
+.reveal-text {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+}
+.reveal-text.visible { opacity: 1; transform: none; }
+
+/* ─── NAVBAR ────────────────────────────────────────────────────── */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.2rem 2rem;
+  transition: background .4s, backdrop-filter .4s, border-color .4s;
+  border-bottom: 1px solid transparent;
+}
+#navbar.scrolled {
+  background: rgba(4,8,10,.85);
+  backdrop-filter: blur(20px);
+  border-color: var(--border);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; }
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: var(--text);
+  text-decoration: none;
+}
+.logo .dot { color: var(--accent); }
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: .88rem;
+  letter-spacing: .01em;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+  padding: .45rem 1.1rem;
+  border-radius: 99px;
+  font-weight: 600;
+  transition: transform .2s, opacity .2s !important;
+}
+.nav-cta:hover { opacity: .85 !important; transform: scale(1.04); }
+
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: transform .3s, opacity .3s; }
+.hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  top: 0; right: -100%;
+  width: min(320px, 100vw);
+  height: 100vh;
+  background: var(--bg-2);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: right .4s var(--ease-out);
+  border-left: 1px solid var(--border);
+}
+.mobile-menu.open { right: 0; }
+.mobile-menu ul { list-style: none; text-align: center; }
+.mobile-menu li { margin: 1.5rem 0; }
+.mobile-menu a { font-size: 1.4rem; color: var(--text); text-decoration: none; font-weight: 600; transition: color .2s; }
+.mobile-menu a:hover { color: var(--accent); }
+
+/* ─── BUTTONS ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .85rem 2rem;
+  border-radius: 99px;
+  font-size: .95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: transform .22s var(--ease-out), opacity .2s, box-shadow .2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,.08);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.btn:hover::after { opacity: 1; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 30px rgba(240,168,48,.25);
+}
+.btn-primary:hover { box-shadow: 0 0 50px rgba(240,168,48,.4); }
+
+.btn-ghost {
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.2);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-full { width: 100%; justify-content: center; border-radius: 12px; font-size: 1rem; }
+.btn-arrow { transition: transform .2s; }
+.btn:hover .btn-arrow { transform: translateX(4px); }
+
+/* ─── HERO ──────────────────────────────────────────────────────── */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#hedgeCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 1.5rem;
+  max-width: 900px;
+}
+
+.hero-eyebrow {
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp .8s var(--ease-out) .3s forwards;
+}
+
+.hero-title {
+  font-size: clamp(4rem, 12vw, 9rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1;
+  margin-bottom: .5rem;
+  overflow: hidden;
+}
+.hero-title .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: slideUp .9s var(--ease-out) forwards;
+}
+.hero-title .word:nth-child(1) { animation-delay: .5s; }
+.hero-title .word:nth-child(2) { animation-delay: .65s; }
+
+.hero-sub {
+  font-size: clamp(.85rem, 2vw, 1.1rem);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp .8s var(--ease-out) 1s forwards;
+}
+
+.hero-desc {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--text-dim);
+  line-height: 1.65;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeUp .8s var(--ease-out) 1.1s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp .8s var(--ease-out) 1.3s forwards;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .7rem;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0;
+  animation: fadeIn 1s .5s var(--ease-out) 1.6s forwards;
+  z-index: 2;
+}
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ─── TAGLINE STRIP ──────────────────────────────────────────────── */
+.tagline-section {
+  padding: 1.2rem 0;
+  background: var(--accent);
+  overflow: hidden;
+}
+.tagline-inner { overflow: hidden; }
+.tagline-track {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--bg);
+}
+
+/* ─── PROBLEM SECTION ───────────────────────────────────────────── */
+.problem-section {
+  padding: 8rem 0;
+  background: var(--bg);
+}
+.problem-section h2 { margin-bottom: 4rem; }
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.problem-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
+  position: relative;
+  overflow: hidden;
+}
+.problem-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(240,168,48,.06), transparent 70%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.problem-card:hover::before { opacity: 1; }
+.problem-card:hover { border-color: rgba(240,168,48,.25); }
+.problem-card.visible { opacity: 1; transform: none; }
+
+.problem-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.2rem;
+  display: block;
+  filter: saturate(0) brightness(1.5);
+  transition: filter .3s;
+}
+.problem-card:hover .problem-icon { filter: none; }
+.problem-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: .6rem; }
+.problem-card p { font-size: .9rem; color: var(--text-dim); line-height: 1.6; }
+
+/* ─── PRODUCT SECTION ───────────────────────────────────────────── */
+.product-section {
+  min-height: 200vh;
+  position: relative;
+}
+.product-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 4rem;
+  padding: 6rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.product-text-panel h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: .3rem; }
+.product-tagline { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 1.5rem; }
+.product-desc { font-size: 1.05rem; color: var(--text-dim); line-height: 1.7; margin-bottom: 2rem; }
+
+.product-bullets { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+.bullet-item {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  font-size: .95rem;
+  color: var(--text);
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity .5s, transform .5s;
+}
+.bullet-item.visible { opacity: 1; transform: none; }
+.bullet-icon { color: var(--accent); flex-shrink: 0; font-size: .7rem; }
+
+/* ─── ANIMATED HEDGE TRIMMER ────────────────────────────────────── */
+.product-visual-panel { display: flex; align-items: center; justify-content: center; }
+.trimmer-wrap {
+  position: relative;
+  width: 440px;
+  max-width: 100%;
+}
+.trimmer {
+  position: relative;
+  width: 100%;
+  animation: trimmerFloat 4s ease-in-out infinite;
+  transform-origin: 70% 60%;
+}
+
+/* leaves being trimmed */
+.leaf-particles {
+  position: absolute;
+  inset: -40px -10px 40px -10px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.trimmer-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* The two shearing blade layers */
+.blade-layer { transition: none; }
+.blade-top   { animation: bladeShearA .18s linear infinite; }
+.blade-bottom{ animation: bladeShearB .18s linear infinite; }
+
+.trimmer-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 35% 55%, rgba(240,168,48,.22), transparent 65%);
+  filter: blur(10px);
+  animation: glowPulse 2.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.power-beam {
+  position: absolute;
+  top: 50%; right: 4%;
+  transform: translateY(-50%);
+  width: 70px;
+  height: 2px;
+  background: linear-gradient(to left, var(--accent), transparent);
+  animation: beamFlash 2.2s ease-in-out infinite;
+}
+
+.spec-badge {
+  position: absolute;
+  bottom: -64px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+.spec-num, .spec-val, .spec-sym {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -.04em;
+}
+.spec-sym { font-size: clamp(1.2rem, 3vw, 1.7rem); }
+.spec-badge p { font-size: .82rem; color: var(--text-dim); margin-top: .2rem; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ─── MECHANISM / AUFBAU (cinematic explode) ────────────────────── */
+.mech-section {
+  min-height: 500vh;
+  position: relative;
+  background: radial-gradient(ellipse at 60% 45%, #1a1206 0%, var(--bg) 65%);
+}
+.mech-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem;
+  overflow: hidden;
+}
+
+/* left info */
+.mech-info { position: relative; z-index: 3; }
+.mech-eyebrow {
+  font-size: .72rem; font-weight: 600; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem;
+}
+.mech-index {
+  display: block;
+  font-size: clamp(4rem, 9vw, 7.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: rgba(240,168,48,.16);
+  transition: color .4s;
+}
+.mech-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: .04em;
+  margin: -.3em 0 1.1rem;
+  transition: opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.mech-sub {
+  font-size: 1rem; color: var(--text-dim); line-height: 1.6;
+  max-width: 34ch; margin-bottom: 2rem; min-height: 3.2em;
+  transition: opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+.mech-swap { opacity: 0; transform: translateY(12px); }
+.mech-readout {
+  display: flex; flex-direction: column; gap: .7rem;
+  border-left: 2px solid rgba(240,168,48,.35); padding-left: 1.1rem;
+  transition: opacity .35s var(--ease-out);
+}
+.mech-readout div { display: flex; justify-content: space-between; max-width: 280px; align-items: baseline; }
+.mech-readout span { font-size: .68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .12em; }
+.mech-readout b { font-size: 1rem; color: var(--accent); font-weight: 700; letter-spacing: -.01em; }
+
+/* right stage */
+.mech-stage {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+}
+.mech-core {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 240px; height: 240px;
+  margin: -120px 0 0 -120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,224,150,.95), rgba(240,168,48,.45) 35%, rgba(240,168,48,.08) 60%, transparent 72%);
+  filter: blur(4px);
+  opacity: .35;
+  transform: scale(.6);
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+.mech-rings {
+  position: absolute; left: 50%; top: 50%;
+  width: 420px; height: 420px; margin: -210px 0 0 -210px;
+  border-radius: 50%;
+  border: 1px solid rgba(240,168,48,.08);
+  box-shadow: 0 0 0 60px rgba(240,168,48,.03) inset;
+  animation: ringSpin 40s linear infinite;
+  pointer-events: none;
+}
+
+/* real 3D model layer */
+.mech3d-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: none;          /* shown only once WebGL init succeeds */
+}
+.mech-stage.has3d .mech3d-wrap { display: block; }
+.mech-stage.has3d .xtrimmer    { display: none; }   /* hide SVG fallback */
+#mech3d {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+.mech-labels { position: absolute; inset: 0; pointer-events: none; }
+.m3d-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(10,9,7,.62);
+  border: 1px solid rgba(240,168,48,.35);
+  box-shadow: 0 4px 14px rgba(0,0,0,.45);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity .25s var(--ease-out);
+  will-change: transform, opacity;
+}
+.m3d-label::before {
+  content: '';
+  position: absolute;
+  left: -16px; top: 50%;
+  width: 12px; height: 1px;
+  background: rgba(240,168,48,.5);
+}
+
+/* the actual hedge trimmer that explodes into parts */
+.xtrimmer {
+  position: relative;
+  z-index: 2;
+  width: 115%;
+  max-width: 560px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,.5));
+}
+.xpart {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform .12s linear;
+}
+/* the gear keeps spinning to read as a mechanism */
+.xgear  { transform-box: fill-box; transform-origin: center; animation: gearSpin 9s linear infinite; }
+.xgear2 { transform-box: fill-box; transform-origin: center; animation: gearSpinR 5s linear infinite; }
+.xlabel {
+  fill: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity .35s var(--ease-out);
+  paint-order: stroke;
+  stroke: rgba(8,8,6,.85);
+  stroke-width: 3px;
+}
+.xtrimmer.exploded .xlabel { opacity: 1; }
+
+@keyframes gearSpin  { to { transform: rotate(360deg); } }
+@keyframes gearSpinR { to { transform: rotate(-360deg); } }
+@keyframes ringSpin  { to { transform: rotate(360deg); } }
+
+/* mobile: show the exploded trimmer statically, no long pin */
+@media (max-width: 900px) {
+  .mech-section { min-height: 0; }
+  .mech-sticky { position: relative; height: auto; grid-template-columns: 1fr; padding: 5rem 2rem; gap: 3rem; }
+  .mech-stage { height: 360px; }
+  .xtrimmer { width: 100%; }
+}
+
+/* ─── STATS ─────────────────────────────────────────────────────── */
+.stats-section {
+  padding: 6rem 0;
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 3rem;
+  text-align: center;
+}
+.stat-item { opacity: 0; transform: translateY(30px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.stat-item.visible { opacity: 1; transform: none; }
+.stat-num {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+.stat-unit { font-size: 1.4rem; font-weight: 600; color: var(--accent); margin-left: .1rem; }
+.stat-label { font-size: .82rem; color: var(--text-dim); margin-top: .5rem; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ─── FEATURES ──────────────────────────────────────────────────── */
+.features-section {
+  padding: 8rem 0;
+  background: var(--bg);
+}
+.features-section h2 { margin-bottom: 4rem; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px) scale(.97);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(240,168,48,.06), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card:hover { border-color: rgba(240,168,48,.2); }
+.feature-card.visible { opacity: 1; transform: none; }
+
+.feature-card.large { grid-column: span 2; display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; }
+.feature-card.large.right .feature-icon-wrap { order: 2; }
+.feature-card.large.right .feature-icon-svg { margin-left: auto; }
+
+.feature-icon-wrap { margin-bottom: 1.5rem; }
+.feature-card.large .feature-icon-wrap { margin-bottom: 0; }
+.feature-icon-svg {
+  width: 64px;
+  height: 64px;
+  color: var(--accent);
+  background: rgba(240,168,48,.08);
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(240,168,48,.15);
+}
+.feature-card.large .feature-icon-svg { width: 80px; height: 80px; }
+
+.feature-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: .7rem; }
+.feature-card p { font-size: .93rem; color: var(--text-dim); line-height: 1.65; }
+
+/* ─── HOW IT WORKS ──────────────────────────────────────────────── */
+.how-section {
+  padding: 8rem 0;
+  background: var(--bg-2);
+}
+.how-section h2 { margin-bottom: 5rem; }
+
+.steps-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding-left: 2rem;
+}
+.steps-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  border-radius: 99px;
+}
+.steps-progress {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 0%;
+  background: linear-gradient(to bottom, var(--accent), rgba(240,168,48,.3));
+  border-radius: 99px;
+  transition: height .3s;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2.5rem;
+  align-items: start;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.step.visible { opacity: 1; transform: none; }
+
+.step-num {
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: rgba(240,168,48,.12);
+  line-height: 1;
+  letter-spacing: -.04em;
+  min-width: 80px;
+  transition: color .3s;
+}
+.step.visible .step-num { color: rgba(240,168,48,.3); }
+
+.step-content h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: .8rem; }
+.step-content p { font-size: .95rem; color: var(--text-dim); line-height: 1.7; }
+
+.step-visual { display: flex; align-items: center; justify-content: center; }
+.step-icon-wrap {
+  width: 80px;
+  height: 80px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 14px;
+  color: var(--accent);
+  transition: border-color .3s, box-shadow .3s;
+}
+.step.visible .step-icon-wrap {
+  border-color: rgba(240,168,48,.3);
+  box-shadow: 0 0 20px rgba(240,168,48,.08);
+}
+
+/* ─── ADVANTAGE / COMPARE ───────────────────────────────────────── */
+.advantage-section {
+  padding: 8rem 0;
+  background: var(--bg);
+}
+.advantage-section h2 { margin-bottom: 4rem; }
+
+.compare-table {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+}
+.compare-table.visible { opacity: 1; transform: none; }
+
+.compare-col { display: flex; flex-direction: column; }
+.compare-cell {
+  padding: .9rem 1.2rem;
+  font-size: .88rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+.compare-cell:last-child { border-bottom: none; }
+.header-cell {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--bg-3);
+  padding: 1.2rem;
+  min-height: 70px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: .2rem;
+}
+.header-cell small { font-size: .68rem; color: var(--text-dim); font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+.volt-col .compare-cell { background: rgba(240,168,48,.04); font-weight: 600; color: var(--accent); }
+.volt-header { background: rgba(240,168,48,.1) !important; color: var(--accent) !important; border-right: 1px solid rgba(240,168,48,.2); border-left: 1px solid rgba(240,168,48,.2); }
+.volt-col .compare-cell:not(.header-cell) { border-right: 1px solid rgba(240,168,48,.1); border-left: 1px solid rgba(240,168,48,.1); }
+
+/* ─── MARKET ────────────────────────────────────────────────────── */
+.market-section {
+  padding: 8rem 0;
+  background: var(--bg-2);
+}
+.market-section h2 { margin-bottom: 3rem; }
+.market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.market-card {
+  position: relative;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.market-card.visible { opacity: 1; transform: none; }
+.market-card:hover .market-glow { opacity: 1; }
+
+.market-badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--bg);
+  padding: .3rem .8rem;
+  border-radius: 99px;
+  margin-bottom: 1.2rem;
+}
+.market-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.2rem; }
+.market-card ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+.market-card li {
+  padding-left: 1.2rem;
+  position: relative;
+  font-size: .93rem;
+  color: var(--text-dim);
+}
+.market-card li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: .75rem;
+}
+
+.market-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(240,168,48,.12), transparent);
+  bottom: -60px;
+  right: -60px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+
+/* ─── PRICING ───────────────────────────────────────────────────── */
+.pricing-section {
+  padding: 8rem 0;
+  background: var(--bg);
+}
+.pricing-section h2 { margin-bottom: 4rem; }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.price-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  position: relative;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
+}
+.price-card.visible { opacity: 1; transform: none; }
+.price-card:hover { border-color: rgba(240,168,48,.25); }
+
+.price-card.featured {
+  background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+  border-color: rgba(240,168,48,.3);
+  box-shadow: 0 0 60px rgba(240,168,48,.1);
+}
+
+.price-popular {
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--bg);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .3rem 1rem;
+  border-radius: 0 0 12px 12px;
+}
+
+.price-label { font-size: .82rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
+.price-amount { display: flex; align-items: baseline; gap: .3rem; margin-bottom: .4rem; }
+.price-currency { font-size: 1.5rem; color: var(--accent); font-weight: 600; }
+.price-num { font-size: 2.8rem; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -.04em; }
+.price-desc { font-size: .82rem; color: var(--text-dim); margin-bottom: 1.8rem; }
+
+.price-features { list-style: none; display: flex; flex-direction: column; gap: .65rem; margin-bottom: 2rem; }
+.price-features li {
+  padding-left: 1.3rem;
+  position: relative;
+  font-size: .9rem;
+  color: var(--text-dim);
+}
+.price-features li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-size: .8rem; top: .05em; }
+
+/* ─── SPECS (timeline style) ────────────────────────────────────── */
+.specs-section {
+  padding: 8rem 0;
+  background: var(--bg-2);
+}
+.specs-section h2 { margin-bottom: 5rem; }
+
+.specs-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem 4rem;
+}
+
+.spec-item {
+  position: relative;
+  padding-left: 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.spec-item.visible { opacity: 1; transform: none; }
+
+.spec-dot {
+  position: absolute;
+  left: 0;
+  top: .5rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.spec-key {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: .6rem;
+}
+.spec-item h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: .4rem; }
+.spec-item p { font-size: .9rem; color: var(--text-dim); line-height: 1.65; }
+
+/* ─── SUSTAINABILITY ─────────────────────────────────────────────── */
+.sustainability-section {
+  padding: 8rem 0;
+  background: var(--bg);
+}
+.sustainability-section h2 { margin-bottom: 4rem; }
+.sustain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+.sustain-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s;
+}
+.sustain-card.visible { opacity: 1; transform: none; }
+.sustain-card:hover { border-color: rgba(240,168,48,.2); }
+.sustain-icon { font-size: 3rem; margin-bottom: 1.2rem; }
+.sustain-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: .8rem; }
+.sustain-card p { font-size: .9rem; color: var(--text-dim); line-height: 1.65; }
+
+/* ─── CONTACT ───────────────────────────────────────────────────── */
+.contact-section {
+  padding: 8rem 0;
+  background: var(--bg-2);
+}
+.contact-section h2 { margin-bottom: 1rem; }
+.contact-sub { font-size: 1.05rem; color: var(--text-dim); margin-bottom: 3rem; }
+
+.contact-form {
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.form-group { display: flex; flex-direction: column; gap: .5rem; }
+.form-group label { font-size: .82rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .85rem 1.1rem;
+  color: var(--text);
+  font-size: .95rem;
+  font-family: var(--font);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  resize: vertical;
+  appearance: none;
+}
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2388a890'%3E%3Cpath d='M5 8l5 5 5-5H5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: rgba(136,168,144,.5); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(240,168,48,.12);
+}
+
+.form-success {
+  display: none;
+  background: rgba(240,168,48,.1);
+  border: 1px solid rgba(240,168,48,.3);
+  border-radius: 12px;
+  padding: 1rem 1.3rem;
+  color: var(--accent);
+  font-size: .95rem;
+}
+.form-success.show { display: block; animation: fadeUp .5s var(--ease-out); }
+
+/* ─── FOOTER ────────────────────────────────────────────────────── */
+.site-footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 4rem 0 2rem;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr;
+  gap: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.footer-brand .logo { font-size: 1.8rem; }
+.footer-brand p { margin-top: .8rem; font-size: .88rem; color: var(--text-dim); line-height: 1.65; }
+
+.footer-links { display: flex; gap: 3rem; }
+.footer-col h4 { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 1rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.footer-col a { font-size: .88rem; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+.footer-col a:hover { color: var(--text); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-bottom p { font-size: .82rem; color: var(--text-dim); }
+.footer-socials { display: flex; gap: 1rem; }
+.footer-socials a {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: border-color .2s, color .2s;
+}
+.footer-socials a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── KEYFRAMES ─────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: .4; transform: scaleY(1); }
+  50%       { opacity: 1;  transform: scaleY(1.2); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: .4; transform: scale(.9); }
+  50%       { opacity: .9; transform: scale(1.1); }
+}
+@keyframes beamFlash {
+  0%, 80%, 100% { opacity: 0; }
+  40%           { opacity: 1; }
+}
+@keyframes trimmerFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50%       { transform: translateY(-10px) rotate(1deg); }
+}
+/* Shearing blades — opposite tiny horizontal motion */
+@keyframes bladeShearA {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(7px); }
+}
+@keyframes bladeShearB {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-7px); }
+}
+@keyframes leafFall {
+  0%   { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .product-sticky { grid-template-columns: 1fr; padding: 5rem 2rem; height: auto; position: relative; }
+  .product-visual-panel { margin-top: 2rem; }
+  .trimmer-wrap { width: 320px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card.large { grid-column: span 1; grid-template-columns: 1fr; }
+  .feature-card.large.right .feature-icon-wrap { order: unset; }
+  .feature-card.large .feature-icon-svg { margin-left: 0; }
+  .compare-table { grid-template-columns: 1.5fr 1fr 1fr 1fr; }
+  .market-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .sustain-grid { grid-template-columns: 1fr; }
+  .specs-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-links { flex-wrap: wrap; gap: 2rem; }
+  .step { grid-template-columns: auto 1fr; }
+  .step-visual { display: none; }
+}
+
+@media (max-width: 600px) {
+  .hero-title { font-size: clamp(3rem, 15vw, 4rem); }
+  .compare-table { display: flex; flex-direction: column; }
+  .compare-col { flex-direction: row; }
+  .compare-cell { flex: 1; }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: center; }
+}
+
+</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- HDRI loader + UnrealBloom post-processing (loaded in dependency order; all optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+</head>
+<body>
+
+  <!-- ─── NAVIGATION ─────────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="logo">VERDA<span class="dot">.</span></a>
+      <ul class="nav-links">
+        <li><a href="#product">Produkt</a></li>
+        <li><a href="#anatomy">Aufbau</a></li>
+        <li><a href="#features">Vorteile</a></li>
+        <li><a href="#how">So funktioniert's</a></li>
+        <li><a href="#market">Für wen</a></li>
+        <li><a href="#pricing">Preise</a></li>
+        <li><a href="#contact" class="nav-cta">Angebot anfragen</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobiles Menü -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#product" class="mob-link">Produkt</a></li>
+      <li><a href="#anatomy" class="mob-link">Aufbau</a></li>
+      <li><a href="#features" class="mob-link">Vorteile</a></li>
+      <li><a href="#how" class="mob-link">So funktioniert's</a></li>
+      <li><a href="#market" class="mob-link">Für wen</a></li>
+      <li><a href="#pricing" class="mob-link">Preise</a></li>
+      <li><a href="#contact" class="mob-link">Kontakt</a></li>
+    </ul>
+  </div>
+
+  <!-- ─── HERO ───────────────────────────────────────────────────── -->
+  <section id="hero" class="hero-section">
+    <canvas id="hedgeCanvas"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Wir präsentieren</p>
+      <h1 class="hero-title">
+        <span class="word">Titan</span>
+        <span class="word accent">Cut</span>
+      </h1>
+      <p class="hero-sub">SCHARF · LEISE · KABELLOS</p>
+      <p class="hero-desc">Die Akku-Heckenschere für den perfekten Schnitt.<br>Mehr Leistung. Weniger Lärm. Null Kabelsalat.</p>
+      <div class="hero-actions">
+        <a href="#product" class="btn btn-primary">Entdecken</a>
+        <a href="#pricing" class="btn btn-ghost">Preise ansehen</a>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scrollen</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── TAGLINE STRIP ──────────────────────────────────────────── -->
+  <section class="tagline-section">
+    <div class="tagline-inner">
+      <div class="tagline-track">
+        <span>Präzision &nbsp;·&nbsp;</span>
+        <span>Ausdauer &nbsp;·&nbsp;</span>
+        <span>Leistung &nbsp;·&nbsp;</span>
+        <span>Komfort &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+        <span>Präzision &nbsp;·&nbsp;</span>
+        <span>Ausdauer &nbsp;·&nbsp;</span>
+        <span>Leistung &nbsp;·&nbsp;</span>
+        <span>Komfort &nbsp;·&nbsp;</span>
+        <span>Qualität &nbsp;·&nbsp;</span>
+        <span>Nachhaltigkeit &nbsp;·&nbsp;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PROBLEM ────────────────────────────────────────────────── -->
+  <section id="problem" class="problem-section">
+    <div class="container">
+      <p class="section-label">Das Problem</p>
+      <h2 class="reveal-text">Heckenschneiden ist<br><span class="accent">oft eine Qual.</span></h2>
+      <div class="problem-grid">
+        <div class="problem-card" data-delay="0">
+          <div class="problem-icon">🔌</div>
+          <h3>Kabel im Weg</h3>
+          <p>Kabelgebundene Modelle schränken die Bewegung ein, verheddern sich im Strauch und brauchen immer eine Steckdose in der Nähe.</p>
+        </div>
+        <div class="problem-card" data-delay="0.15">
+          <div class="problem-icon">🔊</div>
+          <h3>Viel zu laut</h3>
+          <p>Benzin-Heckenscheren dröhnen durch die ganze Nachbarschaft und stoßen Abgase aus — Schneiden wird zum Stressfaktor.</p>
+        </div>
+        <div class="problem-card" data-delay="0.3">
+          <div class="problem-icon">💪</div>
+          <h3>Schwer &amp; ermüdend</h3>
+          <p>Hohes Gewicht und starke Vibrationen führen schon nach kurzer Zeit zu müden Armen und ungenauen Schnitten.</p>
+        </div>
+        <div class="problem-card" data-delay="0.45">
+          <div class="problem-icon">🪫</div>
+          <h3>Schnell leer</h3>
+          <p>Viele Akkugeräte geben mitten in der Hecke auf — zu kurze Laufzeit und ewig lange Ladezeiten bremsen den Fortschritt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PRODUKT REVEAL ─────────────────────────────────────────── -->
+  <section id="product" class="product-section">
+    <div class="product-sticky">
+      <div class="product-text-panel">
+        <p class="section-label">Die Lösung</p>
+        <h2>Titan<span class="accent">Cut</span></h2>
+        <p class="product-tagline">von VERDA</p>
+        <p class="product-desc">
+          Die kabellose Akku-Heckenschere mit lasergeschliffenen Diamantmessern und bürstenlosem Motor. Mühelos durch dicke Äste, leise wie ein Flüstern — und federleicht in der Hand.
+        </p>
+        <ul class="product-bullets">
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Bürstenloser Brushless-Motor für volle Leistung</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> 24&nbsp;mm Schnittstärke — auch für dicke Triebe</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> 60&nbsp;cm lasergeschliffenes Diamantmesser</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Bis zu 80&nbsp;Minuten Laufzeit pro Akkuladung</li>
+          <li class="bullet-item"><span class="bullet-icon">✦</span> Anti-Vibration &amp; nur 2,9&nbsp;kg leicht</li>
+        </ul>
+      </div>
+      <div class="product-visual-panel">
+        <div class="trimmer-wrap">
+          <div class="trimmer-glow"></div>
+          <div class="leaf-particles" id="leafParticles"></div>
+          <div class="trimmer">
+            <svg class="trimmer-svg" viewBox="0 0 440 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Akku -->
+              <rect x="300" y="118" width="74" height="46" rx="8" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+              <rect x="312" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="322" y="128" width="6" height="14" rx="2" fill="#f0a830"/>
+              <rect x="332" y="128" width="6" height="14" rx="2" fill="#c07d1c"/>
+              <!-- Motorgehäuse -->
+              <path d="M250 70 Q252 56 268 56 L330 56 Q352 56 352 84 L352 124 Q352 140 332 140 L268 140 Q250 140 250 122 Z"
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
+              <!-- Lüftungsschlitze -->
+              <path d="M276 74 L276 92 M286 74 L286 92 M296 74 L296 92 M306 74 L306 92" stroke="#141009" stroke-width="2" stroke-linecap="round"/>
+              <!-- Griff -->
+              <path d="M300 56 Q320 18 358 30 Q392 42 372 90 L356 86 Q368 54 350 48 Q328 42 318 64 Z"
+                    fill="url(#bodyGrad)" stroke="#3d3019" stroke-width="2"/>
+              <!-- Schalter -->
+              <rect x="262" y="96" width="26" height="10" rx="5" fill="#f0a830"/>
+              <!-- Frontschutz -->
+              <path d="M250 96 L236 78 L236 118 Z" fill="#1d160b" stroke="#3d3019" stroke-width="2"/>
+
+              <!-- BLADE BASE -->
+              <rect x="20" y="92" width="232" height="14" rx="6" fill="#251d10" stroke="#3d3019" stroke-width="1.5"/>
+
+              <!-- BOTTOM BLADE LAYER -->
+              <g class="blade-layer blade-bottom" fill="#c9d6cd" stroke="#9fb0a6" stroke-width="1">
+                <path d="M28 104 l10 -14 l10 14 Z"/>
+                <path d="M58 104 l10 -14 l10 14 Z"/>
+                <path d="M88 104 l10 -14 l10 14 Z"/>
+                <path d="M118 104 l10 -14 l10 14 Z"/>
+                <path d="M148 104 l10 -14 l10 14 Z"/>
+                <path d="M178 104 l10 -14 l10 14 Z"/>
+                <path d="M208 104 l10 -14 l10 14 Z"/>
+              </g>
+              <!-- TOP BLADE LAYER -->
+              <g class="blade-layer blade-top" fill="#eef4ef" stroke="#b9c8bf" stroke-width="1">
+                <path d="M40 94 l10 14 l10 -14 Z"/>
+                <path d="M70 94 l10 14 l10 -14 Z"/>
+                <path d="M100 94 l10 14 l10 -14 Z"/>
+                <path d="M130 94 l10 14 l10 -14 Z"/>
+                <path d="M160 94 l10 14 l10 -14 Z"/>
+                <path d="M190 94 l10 14 l10 -14 Z"/>
+                <path d="M220 94 l10 14 l10 -14 Z"/>
+              </g>
+              <!-- Blade tip -->
+              <path d="M20 99 L8 99 L12 92 L20 92 Z" fill="#c9d6cd"/>
+
+              <defs>
+                <linearGradient id="bodyGrad" x1="250" y1="56" x2="352" y2="140" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#33291a"/>
+                  <stop offset="1" stop-color="#181208"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="power-beam"></div>
+          </div>
+          <div class="spec-badge">
+            <span class="spec-num"></span><span class="spec-val" id="specVal">0</span><span class="spec-sym">&nbsp;mm</span>
+            <p>Schnittstärke</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AUFBAU / MECHANISMUS (scroll-driven explosion) ─────────── -->
+  <section id="anatomy" class="mech-section">
+    <div class="mech-sticky">
+      <!-- left: changing info -->
+      <div class="mech-info">
+        <p class="mech-eyebrow">Aufbau</p>
+        <span class="mech-index" id="mechIndex">01</span>
+        <h2 class="mech-title" id="mechTitle">ANTRIEB</h2>
+        <p class="mech-sub" id="mechSub">Akku und bürstenloser Motor liefern die Kraft — kabellos und konstant.</p>
+        <div class="mech-readout" id="mechReadout">
+          <div><span>Spannung</span><b>18 V</b></div>
+          <div><span>Akku</span><b>4,0 Ah</b></div>
+          <div><span>Motor</span><b>Brushless</b></div>
+        </div>
+      </div>
+
+      <!-- right: the actual hedge trimmer exploding into labelled parts -->
+      <div class="mech-stage">
+        <div class="mech-core" id="mechCore"></div>
+        <div class="mech-rings"></div>
+
+        <!-- echtes 3D-Modell (WebGL); SVG unten dient als Fallback -->
+        <div class="mech3d-wrap" id="mech3dWrap">
+          <canvas id="mech3d"></canvas>
+          <div class="mech-labels" id="mechLabels"></div>
+        </div>
+
+        <svg class="xtrimmer" id="xtrimmer" viewBox="-150 -40 900 480" fill="none" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="gSteel" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#fbf5e6"/><stop offset=".32" stop-color="#d3c191"/>
+ <stop offset=".55" stop-color="#8c7a4f"/><stop offset=".7" stop-color="#d8c79b"/>
+ <stop offset="1" stop-color="#efe2c2"/></linearGradient>
+<linearGradient id="gHous" x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0" stop-color="#50432b"/><stop offset=".5" stop-color="#2a2012"/>
+ <stop offset="1" stop-color="#120c05"/></linearGradient>
+<linearGradient id="gCopper" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#ffe1a8"/><stop offset=".45" stop-color="#f0a830"/>
+ <stop offset="1" stop-color="#79460f"/></linearGradient>
+<radialGradient id="gGear" cx="40%" cy="34%" r="75%">
+ <stop offset="0" stop-color="#cdbd8c"/></radialGradient>
+<radialGradient id="gGear2" cx="40%" cy="34%" r="75%">
+ <stop offset="0" stop-color="#cdbd8c"/><stop offset=".6" stop-color="#6a5836"/>
+ <stop offset="1" stop-color="#291f0f"/></radialGradient>
+<radialGradient id="gRotor" cx="42%" cy="36%" r="70%">
+ <stop offset="0" stop-color="#fff0cf"/><stop offset=".3" stop-color="#dcc899"/>
+ <stop offset=".7" stop-color="#7c6738"/><stop offset="1" stop-color="#382a13"/></radialGradient>
+<linearGradient id="gCell" x1="0" y1="0" x2="1" y2="0">
+ <stop offset="0" stop-color="#3a2f1b"/><stop offset=".18" stop-color="#e7d6a8"/>
+ <stop offset=".5" stop-color="#8a7647"/><stop offset=".6" stop-color="#6f5d36"/>
+ <stop offset="1" stop-color="#241a0c"/></linearGradient>
+<radialGradient id="gBolt" cx="38%" cy="32%" r="70%">
+ <stop offset="0" stop-color="#d9c896"/><stop offset="1" stop-color="#4a3a1e"/></radialGradient>
+<filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+ <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/></filter>
+<filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+ <feGaussianBlur stdDeviation="3.4" result="b"/><feMerge>
+ <feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs><g class="xpart" data-dx="-150" data-dy="40" filter="url(#soft)"><rect x="40" y="205" width="250" height="16" rx="7" fill="url(#gHous)" stroke="#2a2012" stroke-width="1.5"/><rect x="44" y="206" width="242" height="4" rx="2" fill="#ffffff" opacity="0.16"/><circle cx="70" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="104" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="138" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="172" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="206" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="240" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><circle cx="274" cy="213" r="3" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".6"/><rect x="150" y="211" width="120" height="5" rx="2.5" fill="#000" opacity="0.45"/><g fill="url(#gSteel)" stroke="#8d7c52" stroke-width=".8"><path d="M48 221 l10 -16 l10 16 Z"/><path d="M78 221 l10 -16 l10 16 Z"/><path d="M108 221 l10 -16 l10 16 Z"/><path d="M138 221 l10 -16 l10 16 Z"/><path d="M168 221 l10 -16 l10 16 Z"/><path d="M198 221 l10 -16 l10 16 Z"/><path d="M228 221 l10 -16 l10 16 Z"/><path d="M258 221 l10 -16 l10 16 Z"/><path d="M288 221 l10 -16 l10 16 Z"/></g><g fill="url(#gSteel)" stroke="#b6a576" stroke-width=".8"><path d="M62 205 l10 16 l10 -16 Z"/><path d="M92 205 l10 16 l10 -16 Z"/><path d="M122 205 l10 16 l10 -16 Z"/><path d="M152 205 l10 16 l10 -16 Z"/><path d="M182 205 l10 16 l10 -16 Z"/><path d="M212 205 l10 16 l10 -16 Z"/><path d="M242 205 l10 16 l10 -16 Z"/><path d="M272 205 l10 16 l10 -16 Z"/></g><path d="M40 213 L24 213 L30 205 L40 205 Z" fill="url(#gSteel)"/><text class="xlabel" x="60" y="250">① Messer (Ober-/Untermesser)</text></g><g class="xpart" data-dx="-30" data-dy="-78" filter="url(#soft)"><path d="M300 209 L284 188 L284 232 Z" fill="url(#gHous)" stroke="#2a2012" stroke-width="2"/><path d="M299 206 L286 192 L286 200 Z" fill="#ffffff" opacity="0.16"/><path d="M300 200 L312 200" stroke="#f0a830" stroke-width="2"/><text class="xlabel" x="250" y="182">② Handschutz</text></g><g class="xpart" data-dx="-10" data-dy="118" filter="url(#soft)"><circle cx="320" cy="213" r="20" fill="url(#gGear2)" stroke="#2a2012" stroke-width="2"/><circle cx="314" cy="207" r="8" fill="#ffffff" opacity="0.16"/><path d="M328 207 L292 214" stroke="url(#gCopper)" stroke-width="6" stroke-linecap="round"/><circle cx="328" cy="207" r="5" fill="#f0a830" filter="url(#glow)"/><circle cx="292" cy="214" r="4.5" fill="none" stroke="#f0a830" stroke-width="2"/><circle cx="320" cy="213" r="3" fill="#6a5226"/><text class="xlabel" x="292" y="268">③ Exzenter &amp; Pleuel</text></g><g class="xpart" data-dx="-44" data-dy="86" filter="url(#soft)"><g class="xgear"><path d="M 393.8,201.8 401.9,202.9 401.9,207.1 393.8,208.2 393.6,209.4 400.8,213.3 399.4,217.2 391.4,215.5 390.7,216.5 396.3,222.6 393.6,225.8 386.6,221.5 385.7,222.2 388.8,229.9 385.2,232.0 380.1,225.5 378.9,225.9 379.3,234.1 375.1,234.8 372.6,227.0 371.4,227.0 368.9,234.8 364.7,234.1 365.1,225.9 363.9,225.5 358.8,232.0 355.2,229.9 358.3,222.2 357.4,221.5 350.4,225.8 347.7,222.6 353.3,216.5 352.6,215.5 344.6,217.2 343.2,213.3 350.4,209.4 350.2,208.2 342.1,207.1 342.1,202.9 350.2,201.8 350.4,200.6 343.2,196.7 344.6,192.8 352.6,194.5 353.3,193.5 347.7,187.4 350.4,184.2 357.4,188.5 358.3,187.8 355.2,180.1 358.8,178.0 363.9,184.5 365.1,184.1 364.7,175.9 368.9,175.2 371.4,183.0 372.6,183.0 375.1,175.2 379.3,175.9 378.9,184.1 380.1,184.5 385.2,178.0 388.8,180.1 385.7,187.8 386.6,188.5 393.6,184.2 396.3,187.4 390.7,193.5 391.4,194.5 399.4,192.8 400.8,196.7 393.6,200.6 Z" fill="url(#gGear2)" stroke="#2a2012" stroke-width="1.2"/><circle cx="372" cy="205" r="13" fill="url(#gHous)" stroke="rgba(240,168,48,.45)" stroke-width="1.3"/><line x1="372" y1="205" x2="384.0" y2="205.0" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><line x1="372" y1="205" x2="366.0" y2="215.4" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><line x1="372" y1="205" x2="365.9" y2="194.7" stroke="rgba(240,168,48,.35)" stroke-width="2.2"/><circle cx="366" cy="199" r="6" fill="#ffffff" opacity="0.16"/><circle cx="372" cy="205" r="4" fill="#f0a830"/></g><g class="xgear2"><path d="M 417.7,193.7 421.9,194.3 421.9,197.7 417.7,198.3 417.4,199.2 420.2,202.4 418.0,204.9 414.4,202.7 413.6,203.1 413.7,207.4 410.4,208.0 409.1,203.9 408.2,203.8 405.5,207.1 402.6,205.5 404.2,201.5 403.6,200.8 399.4,201.6 398.3,198.5 402.0,196.4 402.0,195.6 398.3,193.5 399.4,190.4 403.6,191.2 404.2,190.5 402.6,186.5 405.5,184.9 408.2,188.2 409.1,188.1 410.4,184.0 413.7,184.6 413.6,188.9 414.4,189.3 418.0,187.1 420.2,189.6 417.4,192.8 Z" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><circle cx="410" cy="196" r="3" fill="#1d160b"/></g><text class="xlabel" x="330" y="150">④ Getriebe &amp; Ritzel</text></g><g class="xpart" data-dx="0" data-dy="-118" filter="url(#soft)"><circle cx="470" cy="190" r="44" fill="url(#gHous)" stroke="#2a2012" stroke-width="2"/><circle cx="470" cy="190" r="44" fill="none" stroke="rgba(240,168,48,.20)" stroke-width="1"/><circle cx="470" cy="190" r="20" fill="#0f0a04"/><g transform="rotate(0 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(60 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(120 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(180 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(240 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><g transform="rotate(300 470 190)"><rect x="457" y="146" width="26" height="30" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><rect x="459" y="148" width="22" height="5" rx="2" fill="#ffffff" opacity="0.16"/><line x1="459" y1="152" x2="481" y2="152" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="159" x2="481" y2="159" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="166" x2="481" y2="166" stroke="#3a2206" stroke-width="1.3" opacity=".6"/><line x1="459" y1="173" x2="481" y2="173" stroke="#3a2206" stroke-width="1.3" opacity=".6"/></g><text class="xlabel" x="372" y="92">⑤ Stator (Wicklung)</text></g><g class="xpart" data-dx="40" data-dy="-40" filter="url(#soft)"><circle cx="470" cy="190" r="26" fill="url(#gRotor)" stroke="#2a2012" stroke-width="2"/><line x1="493.0" y1="190.0" x2="487.0" y2="190.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="491.2" y1="198.8" x2="485.7" y2="196.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="486.3" y1="206.3" x2="482.0" y2="202.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="478.8" y1="211.2" x2="476.5" y2="205.7" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="470.0" y1="213.0" x2="470.0" y2="207.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="461.2" y1="211.2" x2="463.5" y2="205.7" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="453.7" y1="206.3" x2="458.0" y2="202.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="448.8" y1="198.8" x2="454.3" y2="196.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="447.0" y1="190.0" x2="453.0" y2="190.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="448.8" y1="181.2" x2="454.3" y2="183.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="453.7" y1="173.7" x2="458.0" y2="178.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="461.2" y1="168.8" x2="463.5" y2="174.3" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="470.0" y1="167.0" x2="470.0" y2="173.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="478.8" y1="168.8" x2="476.5" y2="174.3" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="486.3" y1="173.7" x2="482.0" y2="178.0" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><line x1="491.2" y1="181.2" x2="485.7" y2="183.5" stroke="rgba(40,26,8,.7)" stroke-width="1.5"/><circle cx="462" cy="182" r="7" fill="#ffffff" opacity="0.16"/><circle cx="470" cy="190" r="6" fill="#f0a830" filter="url(#glow)"/><rect x="468" y="181" width="4" height="6" fill="#1d160b"/><text class="xlabel" x="520" y="150">⑥ Rotor &amp; Welle</text></g><g class="xpart" data-dx="96" data-dy="4" filter="url(#soft)"><rect x="430" y="138" width="120" height="104" rx="20" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><rect x="438" y="144" width="104" height="10" rx="5" fill="#ffffff" opacity="0.16"/><line x1="444" y1="150" x2="444" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="445" y1="150" x2="445" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="456" y1="150" x2="456" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="457" y1="150" x2="457" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="468" y1="150" x2="468" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="469" y1="150" x2="469" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="480" y1="150" x2="480" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="481" y1="150" x2="481" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="492" y1="150" x2="492" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="493" y1="150" x2="493" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="504" y1="150" x2="504" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="505" y1="150" x2="505" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="516" y1="150" x2="516" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="517" y1="150" x2="517" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="528" y1="150" x2="528" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="529" y1="150" x2="529" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><line x1="540" y1="150" x2="540" y2="174" stroke="#0e0a04" stroke-width="2.4" opacity=".7"/><line x1="541" y1="150" x2="541" y2="174" stroke="#5a4a2c" stroke-width=".8" opacity=".5"/><circle cx="442" cy="150" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="538" cy="150" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="442" cy="230" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><circle cx="538" cy="230" r="4.5" fill="url(#gBolt)" stroke="#2a2012" stroke-width=".7"/><text class="xlabel" x="470" y="300">⑦ Motorgehäuse</text></g><g class="xpart" data-dx="70" data-dy="-86" filter="url(#soft)"><path d="M452 132 Q470 70 540 78 Q604 86 580 168 L556 162 Q576 96 532 92 Q486 90 478 138 Z" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><path d="M470 120 Q484 86 532 88" fill="none" stroke="#ffffff" stroke-opacity="0.18" stroke-width="4" stroke-linecap="round"/><path d="M486 118 Q500 94 532 98" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 112 Q500 88 532 92" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 106 Q500 82 532 86" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 100 Q500 76 532 80" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><path d="M486 94 Q500 70 532 74" fill="none" stroke="#0e0a04" stroke-width="1.4" opacity=".45"/><rect x="430" y="196" width="26" height="12" rx="6" fill="url(#gCopper)" stroke="#7a4d12" stroke-width=".8"/><path d="M456 202 Q470 210 470 224" fill="none" stroke="#f0a830" stroke-width="2" stroke-dasharray="3 3"/><rect x="500" y="150" width="30" height="18" rx="3" fill="#0f1c0a" stroke="#2a2012" stroke-width="1"/><line x1="504" y1="156" x2="526" y2="156" stroke="rgba(240,168,48,.45)" stroke-width="1"/><line x1="504" y1="162" x2="526" y2="162" stroke="rgba(240,168,48,.45)" stroke-width="1"/><text class="xlabel" x="556" y="52">⑧ Griff, Schalter &amp; Elektronik</text></g><g class="xpart" data-dx="110" data-dy="86" filter="url(#soft)"><rect x="452" y="250" width="120" height="60" rx="10" fill="url(#gHous)" stroke="#2a2012" stroke-width="2.5"/><rect x="458" y="254" width="108" height="7" rx="3" fill="#ffffff" opacity="0.16"/><rect x="458" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="460" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="463" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="480" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="482" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="485" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="502" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="504" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="507" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="524" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="526" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="529" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="546" y="262" width="16" height="36" rx="8" fill="url(#gCell)" stroke="#2a2012" stroke-width=".8"/><rect x="548" y="264" width="3" height="32" rx="1.5" fill="#ffffff" opacity="0.16"/><rect x="551" y="258" width="6" height="5" rx="2" fill="#f0a830"/><rect x="468" y="244" width="8" height="8" rx="2" fill="#f0a830"/><rect x="486" y="244" width="8" height="8" rx="2" fill="#f0a830"/><rect x="548" y="244" width="14" height="8" rx="2" fill="#6a5226"/><text class="xlabel" x="470" y="330">⑨ Akku (Lithium-Zellen)</text></g></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── STATS ──────────────────────────────────────────────────── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-num" data-target="80">0</span><span class="stat-unit">min</span>
+          <p class="stat-label">Laufzeit pro Ladung</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="60">0</span><span class="stat-unit">cm</span>
+          <p class="stat-label">Messerlänge</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="24">0</span><span class="stat-unit">mm</span>
+          <p class="stat-label">Schnittstärke</p>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="2900">0</span><span class="stat-unit">g</span>
+          <p class="stat-label">Gewicht</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES ───────────────────────────────────────────────── -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <p class="section-label">Technik</p>
+      <h2 class="reveal-text">Gebaut für den<br><span class="accent">perfekten Schnitt.</span></h2>
+      <div class="features-grid">
+
+        <div class="feature-card large" data-index="0">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="20" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M30 14 L30 10 M30 50 L30 46 M14 30 L10 30 M50 30 L46 30 M19 19 L16 16 M44 44 L41 41 M41 19 L44 16 M16 44 L19 41" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="30" cy="30" r="6" fill="currentColor" opacity="0.3"/>
+                <circle cx="30" cy="30" r="2.5" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Bürstenloser Brushless-Motor</h3>
+          <p>Mehr Drehmoment, weniger Verschleiß und ein deutlich höherer Wirkungsgrad. Der Motor liefert konstante Leistung — auch bei dicken Ästen — und hält ein Geräteleben lang.</p>
+        </div>
+
+        <div class="feature-card" data-index="1">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M10 38 L50 38" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M14 38 L18 30 L22 38 M22 38 L26 30 L30 38 M30 38 L34 30 L38 38 M38 38 L42 30 L46 38" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                <path d="M14 42 L18 50 L22 42 M22 42 L26 50 L30 42 M30 42 L34 50 L38 42 M38 42 L42 50 L46 42" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" opacity="0.5"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Diamantgeschliffene Messer</h3>
+          <p>Lasergeschnittene, diamantgeschärfte Klingen sorgen für saubere Schnitte und bleiben deutlich länger scharf als herkömmliche Messer.</p>
+        </div>
+
+        <div class="feature-card" data-index="2">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="20" y="10" width="20" height="40" rx="4" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="25" y="6" width="10" height="5" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M25 20 L35 20 M25 26 L35 26 M25 32 L35 32" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M30 38 L30 44" stroke="#f0a830" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Wechselakku-System</h3>
+          <p>Der 4,0&nbsp;Ah Lithium-Ionen-Akku ist in 60&nbsp;Minuten geladen und passt in alle Geräte der VERDA-Plattform. Ein Akku für die ganze Gartenpflege.</p>
+        </div>
+
+        <div class="feature-card" data-index="3">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M30 8 C30 8 14 20 14 34 C14 43 21 50 30 50 C39 50 46 43 46 34 C46 20 30 8 30 8 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M30 22 C30 22 24 28 24 35" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Leise &amp; vibrationsarm</h3>
+          <p>Nur 86&nbsp;dB statt dröhnendem Benzinmotor. Die Anti-Vibrations-Aufhängung schont Hände und Gelenke — auch bei langen Heckenzügen.</p>
+        </div>
+
+        <div class="feature-card large right" data-index="4">
+          <div class="feature-icon-wrap">
+            <div class="feature-icon-svg">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M20 50 Q20 30 30 12 Q40 30 40 50" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M30 12 L30 50" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M30 24 L22 30 M30 24 L38 30 M30 34 L23 40 M30 34 L37 40" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <h3>Ergonomie &amp; Sicherheit</h3>
+          <p>Drehbarer Soft-Grip-Griff, Zweihand-Sicherheitsschaltung und ein robuster Handschutz. Die TitanCut liegt ausbalanciert in der Hand und stoppt das Messer in Sekundenbruchteilen, sobald Sie loslassen.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SO FUNKTIONIERT'S ──────────────────────────────────────── -->
+  <section id="how" class="how-section">
+    <div class="container">
+      <p class="section-label">Ablauf</p>
+      <h2 class="reveal-text">Einfach.<br><span class="accent">In drei Schritten.</span></h2>
+      <div class="steps-wrap">
+        <div class="steps-line">
+          <div class="steps-progress" id="stepsProgress"></div>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Akku einsetzen</h3>
+            <p>Den geladenen Lithium-Ionen-Akku einklicken — fertig. Kein Benzin mischen, kein Kabel suchen, kein Anwerfen. In drei Sekunden einsatzbereit.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <rect x="30" y="18" width="20" height="44" rx="4" stroke="currentColor" stroke-width="2"/>
+                <rect x="35" y="13" width="10" height="6" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M40 30 L36 40 L44 40 L40 50" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Sicher starten</h3>
+            <p>Mit beiden Händen den Sicherheitsschalter drücken. Der Brushless-Motor läuft sofort auf volle Drehzahl — leise und ohne Verzögerung.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="24" stroke="currentColor" stroke-width="2"/>
+                <path d="M40 28 L40 40 L48 46" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Schneiden &amp; genießen</h3>
+            <p>Führen Sie die TitanCut ruhig an der Hecke entlang. Die Diamantmesser ziehen mühelos durch — für eine gerade, saubere Kante ohne Nachschneiden.</p>
+          </div>
+          <div class="step-visual">
+            <div class="step-icon-wrap">
+              <svg viewBox="0 0 80 80" fill="none">
+                <path d="M16 52 L40 36 L48 44 L64 28" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M64 28 L58 28 M64 28 L64 34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M16 60 L64 60" stroke="currentColor" stroke-width="1" opacity="0.4"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── VERGLEICH ──────────────────────────────────────────────── -->
+  <section class="advantage-section">
+    <div class="container">
+      <p class="section-label">Vergleich</p>
+      <h2 class="reveal-text">Warum die <span class="accent">TitanCut</span><br>die bessere Wahl ist.</h2>
+      <div class="compare-table">
+        <div class="compare-col header-col">
+          <div class="compare-cell header-cell"></div>
+          <div class="compare-cell">Kabellos &amp; flexibel</div>
+          <div class="compare-cell">Leise (unter 90 dB)</div>
+          <div class="compare-cell">24 mm Schnittstärke</div>
+          <div class="compare-cell">Unter 3 kg Gewicht</div>
+          <div class="compare-cell">Brushless-Motor</div>
+          <div class="compare-cell">Wechselakku-System</div>
+        </div>
+        <div class="compare-col volt-col">
+          <div class="compare-cell header-cell volt-header">TitanCut<br><small>von VERDA</small></div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✓</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Benzin-Schere</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-cell header-cell">Kabel-Schere</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">—</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✓</div>
+          <div class="compare-cell">✗</div>
+          <div class="compare-cell">✗</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FÜR WEN ────────────────────────────────────────────────── -->
+  <section id="market" class="market-section">
+    <div class="container">
+      <p class="section-label">Für wen</p>
+      <h2 class="reveal-text">Für wen ist die<br><span class="accent">TitanCut?</span></h2>
+      <div class="market-grid">
+        <div class="market-card b2c">
+          <div class="market-badge">Privat</div>
+          <h3>Hobbygärtner</h3>
+          <ul>
+            <li>Eigenheim- und Gartenbesitzer</li>
+            <li>Hecken bis zu mittlerer Höhe</li>
+            <li>Wert auf leises, sauberes Arbeiten</li>
+            <li>Keine Lust auf Benzin und Kabel</li>
+            <li>Suchen ein langlebiges Qualitätsgerät</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+        <div class="market-card b2b">
+          <div class="market-badge">Profi</div>
+          <h3>Garten- &amp; Landschaftsbau</h3>
+          <ul>
+            <li>Gärtnereien und Landschaftsbetriebe</li>
+            <li>Kommunale Grünflächenpflege</li>
+            <li>Hausmeisterservices &amp; Facility-Teams</li>
+            <li>Langer Dauereinsatz mit Wechselakkus</li>
+            <li>Fokus auf Robustheit und Service</li>
+          </ul>
+          <div class="market-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── PREISE ─────────────────────────────────────────────────── -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <p class="section-label">Preise</p>
+      <h2 class="reveal-text">Transparente<br><span class="accent">Preise.</span></h2>
+      <div class="pricing-grid">
+        <div class="price-card" data-delay="0">
+          <div class="price-label">Nur Gerät</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">149</span>
+          </div>
+          <div class="price-desc">Ohne Akku &amp; Ladegerät</div>
+          <ul class="price-features">
+            <li>TitanCut Akku-Heckenschere</li>
+            <li>60 cm Diamantmesser</li>
+            <li>Handschutz &amp; Messerköcher</li>
+            <li>Kompatibel mit VERDA-Akkus</li>
+            <li>2 Jahre Garantie</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Anfragen</a>
+        </div>
+        <div class="price-card featured" data-delay="0.15">
+          <div class="price-popular">Empfohlen</div>
+          <div class="price-label">Komplett-Set</div>
+          <div class="price-amount">
+            <span class="price-currency">€</span>
+            <span class="price-num">229</span>
+          </div>
+          <div class="price-desc">Inkl. Akku &amp; Schnellladegerät</div>
+          <ul class="price-features">
+            <li>Alles aus „Nur Gerät“</li>
+            <li>4,0 Ah Lithium-Ionen-Akku</li>
+            <li>60-Minuten-Schnellladegerät</li>
+            <li>Aufbewahrungstasche</li>
+            <li>3 Jahre erweiterte Garantie</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Jetzt anfragen</a>
+        </div>
+        <div class="price-card" data-delay="0.3">
+          <div class="price-label">Profi-Paket (B2B)</div>
+          <div class="price-amount">
+            <span class="price-currency">ab </span>
+            <span class="price-num">Individuell</span>
+          </div>
+          <div class="price-desc">Mengenrabatte für Betriebe</div>
+          <ul class="price-features">
+            <li>Alles aus dem Komplett-Set</li>
+            <li>Zwei Wechselakkus pro Gerät</li>
+            <li>Persönlicher Ansprechpartner</li>
+            <li>Vor-Ort-Service &amp; Wartung</li>
+            <li>Priorisierter Support</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Angebot anfragen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TECHNISCHE DATEN ───────────────────────────────────────── -->
+  <section class="specs-section">
+    <div class="container">
+      <p class="section-label">Technische Daten</p>
+      <h2 class="reveal-text">Alles im<br><span class="accent">Detail.</span></h2>
+      <div class="specs-grid">
+        <div class="spec-item" data-spec="1">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Antrieb</span>
+          <h3>Brushless 18&nbsp;V</h3>
+          <p>Wartungsarmer, bürstenloser Motor mit hohem Wirkungsgrad und konstantem Drehmoment.</p>
+        </div>
+        <div class="spec-item" data-spec="2">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Messer</span>
+          <h3>60&nbsp;cm · 24&nbsp;mm</h3>
+          <p>Lasergeschnittenes, diamantgeschliffenes Doppelmesser mit 24&nbsp;mm Zahnabstand.</p>
+        </div>
+        <div class="spec-item" data-spec="3">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Akku &amp; Laufzeit</span>
+          <h3>4,0&nbsp;Ah · 80&nbsp;min</h3>
+          <p>Lithium-Ionen-Wechselakku, voll geladen in 60&nbsp;Minuten, bis zu 80&nbsp;Minuten Schnittzeit.</p>
+        </div>
+        <div class="spec-item" data-spec="4">
+          <div class="spec-dot"></div>
+          <span class="spec-key">Gewicht &amp; Lärm</span>
+          <h3>2,9&nbsp;kg · 86&nbsp;dB</h3>
+          <p>Leichtes, ausbalanciertes Gehäuse mit Anti-Vibration und angenehm niedrigem Geräuschpegel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── NACHHALTIGKEIT ─────────────────────────────────────────── -->
+  <section class="sustainability-section">
+    <div class="container">
+      <p class="section-label">Nachhaltigkeit</p>
+      <h2 class="reveal-text">Gut für den Garten.<br><span class="accent">Gut für die Umwelt.</span></h2>
+      <div class="sustain-grid">
+        <div class="sustain-card" data-delay="0">
+          <div class="sustain-icon">🌱</div>
+          <h3>Emissionsfrei</h3>
+          <p>Kein Benzin, keine Abgase. Mit Ökostrom geladen, schneiden Sie komplett CO₂-neutral — leise und sauber.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.15">
+          <div class="sustain-icon">🔋</div>
+          <h3>Langlebig</h3>
+          <p>Robuste Bauweise, austauschbarer Akku und ein plattformweites Akku-System verlängern die Lebensdauer und reduzieren Elektroschrott.</p>
+        </div>
+        <div class="sustain-card" data-delay="0.3">
+          <div class="sustain-icon">♻️</div>
+          <h3>Reparierbar</h3>
+          <p>Ersatzmesser und Verschleißteile sind einzeln erhältlich. Reparieren statt wegwerfen — für eine ehrliche Kreislaufwirtschaft.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── KONTAKT ────────────────────────────────────────────────── -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <p class="section-label">Kontakt</p>
+      <h2 class="reveal-text">Bereit für den<br><span class="accent">perfekten Schnitt?</span></h2>
+      <p class="contact-sub">Schreiben Sie uns für eine persönliche Beratung oder ein unverbindliches Angebot.</p>
+      <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Max Mustermann" required />
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input type="email" id="email" name="email" placeholder="max@beispiel.de" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="interest">Interesse</label>
+          <select id="interest" name="interest">
+            <option value="private">Privat — TitanCut kaufen</option>
+            <option value="set">Komplett-Set mit Akku</option>
+            <option value="b2b">Betrieb — Profi-Paket / Mengen</option>
+            <option value="dealer">Händler / Partner</option>
+            <option value="other">Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" placeholder="Beschreiben Sie kurz Ihr Anliegen…" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">
+          <span class="btn-text">Nachricht senden</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <div class="form-success" id="formSuccess">
+          <span>✓</span> Ihre Nachricht wurde gesendet. Wir melden uns in Kürze!
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#hero" class="logo">VERDA<span class="dot">.</span></a>
+          <p>Scharf. Leise. Kabellos.<br>Werkzeuge für die moderne Gartenpflege.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Produkt</h4>
+            <ul>
+              <li><a href="#product">TitanCut</a></li>
+              <li><a href="#features">Technik</a></li>
+              <li><a href="#how">Bedienung</a></li>
+              <li><a href="#pricing">Preise</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Unternehmen</h4>
+            <ul>
+              <li><a href="#market">Für wen</a></li>
+              <li><a href="#problem">Mission</a></li>
+              <li><a href="#">Nachhaltigkeit</a></li>
+              <li><a href="#contact">Kontakt</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><a href="#">Impressum</a></li>
+              <li><a href="#">Datenschutz</a></li>
+              <li><a href="#">AGB</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 VERDA — TitanCut. Alle Rechte vorbehalten.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+/* ─── HEDGE / GARDEN CANVAS ─────────────────────────────────────── */
+(function initCanvas() {
+  const canvas = document.getElementById('hedgeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], leaves = [];
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* soft pollen specks */
+  for (let i = 0; i < 160; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.4 + .3,
+      a: Math.random(),
+      da: (Math.random() - .5) * .008,
+      vx: (Math.random() - .5) * .15,
+      vy: (Math.random() - .5) * .15,
+    });
+  }
+
+  /* drifting leaves */
+  for (let i = 0; i < 26; i++) {
+    leaves.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 5 + 2,
+      color: Math.random() > .5 ? '#f0a830' : '#c07d1c',
+      speedY: Math.random() * .5 + .2,
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: Math.random() * .02 + .01,
+    });
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
+
+    /* deep background gradient */
+    const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .85);
+    bg.addColorStop(0,  'rgba(20,15,6,.95)');
+    bg.addColorStop(.5, 'rgba(12,9,5,.97)');
+    bg.addColorStop(1,  'rgba(4,8,10,1)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    /* central green glow */
+    const glowR = 120 + Math.sin(t * .001) * 14;
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR * 2.4);
+    glow.addColorStop(0,  'rgba(240,168,48,.20)');
+    glow.addColorStop(.4, 'rgba(240,168,48,.06)');
+    glow.addColorStop(1,  'transparent');
+    ctx.beginPath();
+    ctx.arc(cx, cy, glowR * 2.4, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    /* faint rings */
+    ctx.beginPath();
+    ctx.arc(cx, cy, 150 + Math.sin(t * .0008) * 10, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(240,168,48,.06)';
+    ctx.lineWidth = 1; ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 230 + Math.cos(t * .0006) * 12, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(240,168,48,.04)';
+    ctx.lineWidth = 1; ctx.stroke();
+
+    /* pollen */
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.a += p.da;
+      if (p.a < 0) p.da = Math.abs(p.da);
+      if (p.a > 1) p.da = -Math.abs(p.da);
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(235,222,190,${p.a * .6})`;
+      ctx.fill();
+    });
+
+    /* leaves */
+    leaves.forEach(l => {
+      l.sway += l.swaySpeed;
+      l.y += l.speedY;
+      l.x += Math.sin(l.sway) * .6;
+      if (l.y > H + 10) { l.y = -10; l.x = Math.random() * W; }
+      ctx.save();
+      ctx.translate(l.x, l.y);
+      ctx.rotate(l.sway);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, l.r, l.r * .5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = l.color;
+      ctx.globalAlpha = .5;
+      ctx.fill();
+      ctx.restore();
+      ctx.globalAlpha = 1;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+/* ─── LEAF CLIPPINGS FLYING OFF THE BLADE ───────────────────────── */
+function spawnLeaf() {
+  const container = document.getElementById('leafParticles');
+  if (!container) return;
+  const p = document.createElement('span');
+  const green = Math.random() > .5 ? '#f0a830' : '#c07d1c';
+  p.style.cssText = `
+    position:absolute;
+    width:7px;height:4px;border-radius:60% 60% 60% 0;
+    background:${green};
+    left:${Math.random()*55}%;
+    top:42%;
+    --tx:${(Math.random()-0.5)*120}px;
+    --ty:${Math.random()*70+30}px;
+    --rot:${(Math.random()-0.5)*540}deg;
+    animation:leafFall ${.7+Math.random()*.7}s ease-in forwards;
+    pointer-events:none;
+  `;
+  container.appendChild(p);
+  setTimeout(() => p.remove(), 1500);
+}
+setInterval(spawnLeaf, 220);
+
+/* ─── SPEC NUMBER (cutting thickness) ───────────────────────────── */
+function animateSpec(target = 24) {
+  const el = document.getElementById('specVal');
+  if (!el) return;
+  let n = 0;
+  const step = () => {
+    n = Math.min(n + 1, target);
+    el.textContent = n;
+    if (n < target) setTimeout(step, 45);
+  };
+  step();
+}
+let specDone = false;
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('specVal');
+  if (!el || specDone) return;
+  const rect = el.closest('.trimmer-wrap')?.getBoundingClientRect();
+  if (rect && rect.top < window.innerHeight * .8) { animateSpec(24); specDone = true; }
+}, { passive: true });
+
+/* ─── STATS COUNTER ─────────────────────────────────────────────── */
+function animateCount(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const duration = 1600;
+  const start = performance.now();
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 4);
+    el.textContent = Math.round(ease * target).toLocaleString('de-DE');
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+/* ─── INTERSECTION OBSERVER ─────────────────────────────────────── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+
+    if (el.classList.contains('section-label') || el.classList.contains('reveal-text') ||
+        el.classList.contains('step') || el.classList.contains('compare-table') ||
+        el.classList.contains('bullet-item')) {
+      el.classList.add('visible'); io.unobserve(el); return;
+    }
+    if (el.classList.contains('problem-card') || el.classList.contains('sustain-card') ||
+        el.classList.contains('price-card')) {
+      const delay = parseFloat(el.dataset.delay || 0) * 1000;
+      setTimeout(() => el.classList.add('visible'), delay); io.unobserve(el); return;
+    }
+    if (el.classList.contains('feature-card')) {
+      setTimeout(() => el.classList.add('visible'), parseInt(el.dataset.index || 0) * 120);
+      io.unobserve(el); return;
+    }
+    if (el.classList.contains('stat-item')) {
+      el.classList.add('visible');
+      const num = el.querySelector('.stat-num'); if (num) animateCount(num);
+      io.unobserve(el); return;
+    }
+    if (el.classList.contains('market-card')) {
+      setTimeout(() => el.classList.add('visible'), el.classList.contains('b2b') ? 200 : 0);
+      io.unobserve(el); return;
+    }
+    if (el.classList.contains('spec-item')) {
+      const idx = parseInt(el.dataset.spec || 1) - 1;
+      setTimeout(() => el.classList.add('visible'), idx * 180); io.unobserve(el); return;
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll(
+  '.section-label, .reveal-text, .problem-card, .feature-card, ' +
+  '.step, .stat-item, .market-card, .price-card, .spec-item, ' +
+  '.compare-table, .sustain-card, .bullet-item'
+).forEach(el => io.observe(el));
+
+/* ─── GSAP SCROLL ANIMATIONS ────────────────────────────────────── */
+gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+gsap.from('.hero-content', { opacity: 0, y: 40, duration: 1.2, ease: 'power3.out', delay: .2 });
+
+gsap.from('.product-text-panel', {
+  scrollTrigger: { trigger: '.product-section', start: 'top 70%' },
+  x: -60, opacity: 0, duration: 1, ease: 'power3.out',
+});
+gsap.from('.product-visual-panel', {
+  scrollTrigger: { trigger: '.product-section', start: 'top 70%' },
+  x: 60, opacity: 0, duration: 1, ease: 'power3.out', delay: .2,
+});
+
+gsap.from('.bullet-item', {
+  scrollTrigger: { trigger: '.product-text-panel', start: 'top 60%' },
+  x: -30, opacity: 0, duration: .6, stagger: .12, ease: 'power2.out', delay: .4,
+  onComplete() { document.querySelectorAll('.bullet-item').forEach(el => el.classList.add('visible')); }
+});
+
+gsap.from('.step', {
+  scrollTrigger: { trigger: '.steps-wrap', start: 'top 70%' },
+  x: -50, opacity: 0, duration: .8, stagger: .2, ease: 'power3.out',
+});
+
+ScrollTrigger.create({
+  trigger: '.steps-wrap', start: 'top center', end: 'bottom center',
+  onUpdate(self) {
+    const bar = document.getElementById('stepsProgress');
+    if (bar) bar.style.height = (self.progress * 100) + '%';
+  }
+});
+
+/* ─── MECHANISM: rotate gears, then explode into layers on scroll ─ */
+(function mechScroll() {
+  const section = document.querySelector('.mech-section');
+  if (!section) return;
+
+  const svg     = document.getElementById('xtrimmer');
+  const parts   = gsap.utils.toArray('.xpart');
+  const core    = document.getElementById('mechCore');
+  const idxEl   = document.getElementById('mechIndex');
+  const titleEl = document.getElementById('mechTitle');
+  const subEl   = document.getElementById('mechSub');
+  const readEl  = document.getElementById('mechReadout');
+
+  // three narrative stages, like the watch page
+  const stages = [
+    { idx: '01', title: 'ANTRIEB',  sub: 'Akku und bürstenloser Motor liefern die Kraft — kabellos und konstant.',
+      read: [['Spannung','18 V'],['Akku','4,0 Ah'],['Motor','Brushless']] },
+    { idx: '02', title: 'ROTATION', sub: 'Das Getriebe wandelt die Motordrehung in bis zu 3.200 Hübe pro Minute um.',
+      read: [['Drehzahl','3.200 /min'],['Hubzahl','3.200 spm'],['Frequenz','53 Hz']] },
+    { idx: '03', title: 'AUFBAU',   sub: 'Sechs Komponenten greifen ineinander — vom Akku bis zum Diamantmesser.',
+      read: [['Komponenten','6'],['Schnittstärke','24 mm'],['Messer','60 cm']] },
+  ];
+
+  let curStage = -1;
+  function setStage(s) {
+    if (s === curStage) return;
+    curStage = s;
+    const st = stages[s];
+    [titleEl, subEl, readEl].forEach(el => el.classList.add('mech-swap'));
+    setTimeout(() => {
+      idxEl.textContent   = st.idx;
+      titleEl.textContent = st.title;
+      subEl.textContent   = st.sub;
+      readEl.innerHTML    = st.read.map(r => `<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+      idxEl.style.color   = 'rgba(240,168,48,' + (0.16 + s * 0.12) + ')';
+      [titleEl, subEl, readEl].forEach(el => el.classList.remove('mech-swap'));
+    }, 180);
+  }
+
+  function render(p) {
+    // p: 0..1 over the whole pinned section.
+    // Stay assembled (recognisable trimmer) through stage 1-2, then explode.
+    const explode = Math.max(0, Math.min(1, (p - 0.40) / 0.60)); // 0..1
+    const eased   = explode * explode * (3 - 2 * explode);        // smoothstep
+
+    if (window.__MECH3D) {
+      // drive the real 3D model; SVG fallback is hidden
+      window.__MECH3D.render(p, explode, eased);
+    } else {
+      parts.forEach(g => {
+        const dx = (+g.dataset.dx || 0) * eased;
+        const dy = (+g.dataset.dy || 0) * eased;
+        g.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+      svg.classList.toggle('exploded', explode > 0.15);
+    }
+
+    // glowing core grows with the sequence
+    core.style.opacity = (0.30 + p * 0.5).toFixed(3);
+    core.style.transform = `scale(${(0.6 + p * 1.0).toFixed(3)})`;
+
+    setStage(p < 0.34 ? 0 : p < 0.67 ? 1 : 2);
+  }
+  render(0);
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: true,
+    onUpdate(self) { render(self.progress); }
+  });
+})();
+
+/* Card tilt on hover */
+function tilt(selector, depth, perspective) {
+  document.querySelectorAll(selector).forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width  - .5;
+      const y = (e.clientY - rect.top)  / rect.height - .5;
+      card.style.transform = `perspective(${perspective}px) rotateY(${x*depth}deg) rotateX(${-y*depth}deg)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = 'none'; });
+  });
+}
+tilt('.price-card', 8, 600);
+tilt('.feature-card', 6, 700);
+
+document.querySelectorAll('.reveal-text').forEach(el => {
+  gsap.from(el, {
+    scrollTrigger: { trigger: el, start: 'top 80%' },
+    y: 50, opacity: 0, duration: .9, ease: 'power3.out',
+    onStart() { el.classList.add('visible'); }
+  });
+});
+
+gsap.to('.tagline-track', {
+  scrollTrigger: { trigger: '.tagline-section', start: 'top bottom', end: 'bottom top', scrub: true },
+  x: '-=50',
+});
+
+/* ─── NAVBAR + MENU ─────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger?.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu?.classList.toggle('open');
+});
+document.querySelectorAll('.mob-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger?.classList.remove('open');
+    mobileMenu?.classList.remove('open');
+  });
+});
+
+/* ─── CONTACT FORM ──────────────────────────────────────────────── */
+function handleSubmit(e) {
+  e.preventDefault();
+  const success = document.getElementById('formSuccess');
+  const btn = e.target.querySelector('.btn-text');
+  btn.textContent = 'Wird gesendet…';
+  setTimeout(() => {
+    btn.textContent = 'Nachricht senden';
+    e.target.reset();
+    if (success) success.classList.add('show');
+    setTimeout(() => success?.classList.remove('show'), 5000);
+  }, 1200);
+}
+
+/* ─── SMOOTH ANCHORS ────────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+/* ─── HERO PARALLAX ─────────────────────────────────────────────── */
+document.addEventListener('mousemove', (e) => {
+  const xR = (e.clientX / window.innerWidth  - .5) * 2;
+  const yR = (e.clientY / window.innerHeight - .5) * 2;
+  const hero = document.querySelector('.hero-content');
+  if (hero) hero.style.transform = `translate(${xR * 8}px, ${yR * 5}px)`;
+});
+
+/* Spec items glow */
+document.querySelectorAll('.spec-dot').forEach((dot, i) => {
+  ScrollTrigger.create({
+    trigger: dot, start: 'top 80%', once: true,
+    onEnter() {
+      setTimeout(() => {
+        dot.style.boxShadow = '0 0 20px rgba(240,168,48,.8), 0 0 40px rgba(240,168,48,.3)';
+      }, i * 180);
+    }
+  });
+});
+
+console.log('%cVERDA TitanCut — Akku-Heckenschere', 'color:#f0a830;font-weight:800;font-size:18px;');
+
+/* ─── REAL 3D MECHANISM (Three.js) ──────────────────────────────────
+   Builds the hedge trimmer from real geometry with metal materials,
+   environment reflections, lights and shadows. Scroll rotates it and
+   blows it apart into labelled parts. Falls back to the SVG silently
+   if WebGL or the THREE library is unavailable.                       */
+(function buildMech3D() {
+  if (!window.THREE) return;                         // CDN blocked → SVG fallback
+  const canvas = document.getElementById('mech3d');
+  const stage  = document.querySelector('.mech-stage');
+  const labelLayer = document.getElementById('mechLabels');
+  if (!canvas || !stage) return;
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  } catch (e) { return; }                            // no WebGL → SVG fallback
+  if (!renderer || !renderer.getContext()) return;
+
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(DPR);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+
+  /* ---- environment map (gradient) for believable metal reflections ---- */
+  function makeEnv() {
+    const c = document.createElement('canvas'); c.width = 128; c.height = 64;
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, 0, 64);
+    g.addColorStop(0.00, '#454d5e');
+    g.addColorStop(0.42, '#23272f');
+    g.addColorStop(0.50, '#6a5f48');
+    g.addColorStop(0.58, '#22262d');
+    g.addColorStop(1.00, '#0b0a08');
+    x.fillStyle = g; x.fillRect(0, 0, 128, 64);
+    x.fillStyle = 'rgba(255,238,205,0.95)'; x.fillRect(14, 10, 44, 5);   // soft light bar
+    x.fillStyle = 'rgba(240,168,48,0.30)';  x.fillRect(78, 40, 40, 8);   // warm bounce
+    const tex = new THREE.CanvasTexture(c);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    const env = pmrem.fromEquirectangular(tex).texture;
+    tex.dispose(); pmrem.dispose();
+    return env;
+  }
+  scene.environment = makeEnv();   // immediate fallback so metal is never black
+
+  // upgrade to a real HDRI studio environment when the loader is available
+  if (THREE.RGBELoader) {
+    try {
+      new THREE.RGBELoader().load(
+        'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/equirectangular/royal_esplanade_1k.hdr',
+        function (hdr) {
+          hdr.mapping = THREE.EquirectangularReflectionMapping;
+          const pm = new THREE.PMREMGenerator(renderer);
+          pm.compileEquirectangularShader();
+          const env = pm.fromEquirectangular(hdr).texture;
+          scene.environment = env;
+          hdr.dispose(); pm.dispose();
+        },
+        undefined,
+        function () { /* HDR blocked → keep gradient env */ }
+      );
+    } catch (e) { /* keep gradient env */ }
+  }
+
+  /* ---- materials ---- */
+  const M = {
+    housing: new THREE.MeshStandardMaterial({ color: 0x2b2517, metalness: 0.85, roughness: 0.42 }),
+    steel:   new THREE.MeshStandardMaterial({ color: 0xcfc6ad, metalness: 1.0,  roughness: 0.26 }),
+    gear:    new THREE.MeshStandardMaterial({ color: 0xa3946a, metalness: 1.0,  roughness: 0.30 }),
+    copper:  new THREE.MeshStandardMaterial({ color: 0xd98a36, metalness: 0.95, roughness: 0.32 }),
+    cell:    new THREE.MeshStandardMaterial({ color: 0xb9a877, metalness: 0.8,  roughness: 0.38 }),
+    grip:    new THREE.MeshStandardMaterial({ color: 0x16130c, metalness: 0.25, roughness: 0.85 }),
+    pcb:     new THREE.MeshStandardMaterial({ color: 0x123a18, metalness: 0.3,  roughness: 0.6 }),
+    dark:    new THREE.MeshStandardMaterial({ color: 0x0e0b06, metalness: 0.4,  roughness: 0.7 }),
+    accent:  new THREE.MeshStandardMaterial({ color: 0x3a2606, metalness: 0.5,  roughness: 0.4,
+                                              emissive: 0xf0a830, emissiveIntensity: 1.8 }),
+  };
+
+  /* ---- post-processing: UnrealBloom for cinematic highlights ---- */
+  let composer = null, bloomPass = null;
+  if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
+    try {
+      composer = new THREE.EffectComposer(renderer);
+      composer.addPass(new THREE.RenderPass(scene, camera));
+      bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.45, 0.82);
+      composer.addPass(bloomPass);
+    } catch (e) { composer = null; }
+  }
+
+  const root = new THREE.Group();          // everything (gets scroll rotation)
+  scene.add(root);
+
+  // helper: make a "part" group that can fly out on explode
+  const partList = [];   // { group, dir:Vector3, label, spinners:[] }
+  function addPart(dir, label) {
+    const g = new THREE.Group();
+    root.add(g);
+    const p = { group: g, dir: new THREE.Vector3(dir[0], dir[1], dir[2]), label, labelEl: null, home: new THREE.Vector3() };
+    partList.push(p);
+    return g;
+  }
+  function box(w, h, d, mat) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.castShadow = m.receiveShadow = true; return m; }
+  function cyl(rt, rb, h, mat, seg) { const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 36), mat); m.castShadow = m.receiveShadow = true; return m; }
+  function rrect(w, h, d, r, mat) {  // rounded box via extruded rounded rect
+    const s = new THREE.Shape();
+    const x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y);
+    s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+    s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+    s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: d, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 2, steps: 1 });
+    geo.translate(0, 0, -d / 2);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = m.receiveShadow = true; return m;
+  }
+  function gearMesh(teeth, ro, rr, depth, mat) {
+    const shape = new THREE.Shape();
+    const step = Math.PI * 2 / teeth;
+    for (let i = 0; i < teeth; i++) {
+      const a = i * step;
+      [[a - step * 0.42, rr], [a - step * 0.18, ro], [a + step * 0.18, ro], [a + step * 0.42, rr]]
+        .forEach(([ang, r], j) => {
+          const px = Math.cos(ang) * r, py = Math.sin(ang) * r;
+          (i === 0 && j === 0) ? shape.moveTo(px, py) : shape.lineTo(px, py);
+        });
+    }
+    shape.closePath();
+    const hole = new THREE.Path(); hole.absarc(0, 0, rr * 0.4, 0, Math.PI * 2, true); shape.holes.push(hole);
+    const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: depth * 0.18, bevelSize: depth * 0.12, bevelSegments: 1, steps: 1 });
+    geo.translate(0, 0, -depth / 2);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = m.receiveShadow = true; return m;
+  }
+
+  const spinners = [];   // meshes that rotate continuously
+
+  /* ① BLADE ----------------------------------------------------------- */
+  (function () {
+    const g = addPart([-0.2, -1, 0], '① Messer');
+    const bar = box(9.0, 0.55, 0.3, M.housing); bar.position.set(-4.7, 0, 0); g.add(bar);
+    const edge = box(9.0, 0.12, 0.34, M.steel); edge.position.set(-4.7, 0.28, 0); g.add(edge);
+    // teeth (triangular prisms) along both sides
+    const triShape = new THREE.Shape();
+    triShape.moveTo(0, 0); triShape.lineTo(0.5, 0.55); triShape.lineTo(1.0, 0); triShape.closePath();
+    const triGeo = new THREE.ExtrudeGeometry(triShape, { depth: 0.26, bevelEnabled: false });
+    triGeo.translate(0, 0, -0.13);
+    for (let i = 0; i < 16; i++) {
+      const tx = -8.8 + i * 0.56;
+      const tTop = new THREE.Mesh(triGeo, M.steel); tTop.castShadow = true;
+      tTop.position.set(tx, 0.28, 0); g.add(tTop);
+      const tBot = new THREE.Mesh(triGeo, M.steel); tBot.castShadow = true;
+      tBot.position.set(tx + 0.28, -0.28, 0); tBot.rotation.z = Math.PI; g.add(tBot);
+    }
+    const tip = cyl(0.16, 0.16, 0.3, M.steel, 12); tip.rotation.z = Math.PI / 2; tip.position.set(-9.3, 0, 0); g.add(tip);
+  })();
+
+  /* ② HANDGUARD ------------------------------------------------------- */
+  (function () {
+    const g = addPart([0, 1, 0.4], '② Handschutz');
+    const plate = box(0.25, 1.7, 1.7, M.housing); plate.position.set(0.1, 0, 0); g.add(plate);
+    const lip = box(0.5, 0.18, 1.7, M.accent); lip.position.set(0.35, 0.85, 0); g.add(lip);
+  })();
+
+  /* ③ ECCENTRIC + CONROD --------------------------------------------- */
+  (function () {
+    const g = addPart([-0.1, -1.1, 0.6], '③ Exzenter & Pleuel');
+    const ecc = cyl(0.6, 0.6, 0.45, M.gear, 28); ecc.rotation.x = Math.PI / 2; ecc.position.set(0.9, 0, 0.2); g.add(ecc); spinners.push({ m: ecc, s: 1.4, ax: 'z' });
+    const rod = box(1.6, 0.22, 0.18, M.copper); rod.position.set(0.1, 0, 0.2); g.add(rod);
+    const pin = cyl(0.14, 0.14, 0.5, M.accent, 16); pin.rotation.x = Math.PI / 2; pin.position.set(1.2, 0.32, 0.2); g.add(pin);
+  })();
+
+  /* ④ GEARS ----------------------------------------------------------- */
+  (function () {
+    const g = addPart([-0.3, 1.1, 0.7], '④ Getriebe & Ritzel');
+    const big = gearMesh(18, 1.05, 0.78, 0.34, M.gear); big.position.set(1.5, 0.1, 0.55); g.add(big); spinners.push({ m: big, s: -1.0, ax: 'z' });
+    const hub = cyl(0.34, 0.34, 0.4, M.housing, 24); hub.rotation.x = Math.PI / 2; hub.position.set(1.5, 0.1, 0.55); g.add(hub);
+    const small = gearMesh(9, 0.5, 0.34, 0.3, M.copper); small.position.set(2.45, 0.55, 0.55); g.add(small); spinners.push({ m: small, s: 2.0, ax: 'z' });
+  })();
+
+  /* ⑤ STATOR ---------------------------------------------------------- */
+  (function () {
+    const g = addPart([0, 1.2, -0.2], '⑤ Stator (Wicklung)');
+    const ringO = cyl(1.5, 1.5, 1.1, M.housing, 40); ringO.rotation.z = Math.PI / 2; ringO.position.set(1.5, 0, 0); g.add(ringO);
+    const ringI = cyl(0.95, 0.95, 1.16, M.dark, 40); ringI.rotation.z = Math.PI / 2; ringI.position.set(1.5, 0, 0); g.add(ringI);
+    for (let k = 0; k < 6; k++) {
+      const a = k * Math.PI / 3;
+      const coil = box(0.95, 0.5, 0.5, M.copper);
+      coil.position.set(1.5, Math.cos(a) * 1.18, Math.sin(a) * 1.18);
+      coil.rotation.x = a; g.add(coil);
+    }
+  })();
+
+  /* ⑥ ROTOR + SHAFT --------------------------------------------------- */
+  (function () {
+    const g = addPart([0, -0.3, 1.3], '⑥ Rotor & Welle');
+    const rot = cyl(0.82, 0.82, 1.0, M.steel, 28); rot.rotation.z = Math.PI / 2; rot.position.set(1.5, 0, 0); g.add(rot); spinners.push({ m: rot, s: 4.5, ax: 'x' });
+    for (let k = 0; k < 8; k++) {
+      const a = k * Math.PI / 4;
+      const slot = box(1.02, 0.12, 0.18, M.dark);
+      slot.position.set(1.5, Math.cos(a) * 0.7, Math.sin(a) * 0.7);
+      slot.rotation.x = a; rot.add(slot);
+    }
+    const shaft = cyl(0.16, 0.16, 4.4, M.steel, 18); shaft.rotation.z = Math.PI / 2; shaft.position.set(0.2, 0, 0); g.add(shaft); spinners.push({ m: shaft, s: 4.5, ax: 'x' });
+    const core = cyl(0.2, 0.2, 1.04, M.accent, 16); core.rotation.z = Math.PI / 2; core.position.set(1.5, 0, 0); g.add(core);
+  })();
+
+  /* ⑦ MOTOR HOUSING --------------------------------------------------- */
+  (function () {
+    const g = addPart([0.3, 0, -1.3], '⑦ Motorgehäuse');
+    const shell = rrect(3.0, 2.7, 2.7, 0.7, M.housing); shell.rotation.y = Math.PI / 2; shell.position.set(1.6, 0, 0); g.add(shell);
+    for (let i = 0; i < 8; i++) {
+      const fin = box(0.06, 1.2, 2.4, M.dark);
+      fin.position.set(0.45 + i * 0.16, 0.55, 0); g.add(fin);
+    }
+    [[3.1, 1.0, 1.0], [3.1, 1.0, -1.0], [3.1, -1.0, 1.0], [3.1, -1.0, -1.0]].forEach(p => {
+      const bolt = cyl(0.13, 0.13, 0.12, M.gear, 12); bolt.rotation.x = Math.PI / 2; bolt.position.set(p[0], p[1], p[2]); g.add(bolt);
+    });
+  })();
+
+  /* ⑧ HANDLE + ELECTRONICS ------------------------------------------- */
+  (function () {
+    const g = addPart([0.5, 1.2, -0.4], '⑧ Griff & Elektronik');
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(2.0, 1.2, 0), new THREE.Vector3(2.6, 2.7, 0),
+      new THREE.Vector3(4.2, 2.9, 0), new THREE.Vector3(4.9, 1.6, 0),
+      new THREE.Vector3(4.6, 0.4, 0),
+    ]);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.34, 16, false), M.grip);
+    tube.castShadow = tube.receiveShadow = true; g.add(tube);
+    const trigger = box(0.5, 0.5, 0.7, M.accent); trigger.position.set(2.0, 0.5, 0); g.add(trigger);
+    const pcb = box(0.1, 0.7, 1.1, M.pcb); pcb.position.set(2.9, 1.0, 0); g.add(pcb);
+  })();
+
+  /* ⑨ BATTERY --------------------------------------------------------- */
+  (function () {
+    const g = addPart([0.4, -1.3, 0], '⑨ Akku (Lithium-Zellen)');
+    const pack = rrect(3.0, 1.4, 1.8, 0.3, M.housing); pack.rotation.y = Math.PI / 2; pack.position.set(3.0, -1.7, 0); g.add(pack);
+    for (let i = 0; i < 5; i++) {
+      const cell = cyl(0.26, 0.26, 1.2, M.cell, 20); cell.rotation.z = Math.PI / 2;
+      cell.position.set(2.0 + i * 0.5, -1.7, 0); g.add(cell);
+      const cap = cyl(0.1, 0.1, 0.1, M.accent, 12); cap.rotation.z = Math.PI / 2; cap.position.set(1.4, -1.7 + 0, 0);
+    }
+    const term = box(0.4, 0.18, 0.7, M.accent); term.position.set(1.5, -1.1, 0); g.add(term);
+  })();
+
+  // record each part's home position (its children are offset in world space,
+  // so the group itself starts at origin and we translate it along dir).
+  partList.forEach(p => { p.home.copy(p.group.position); });
+
+  /* ---- labels (HTML, projected each frame) ---- */
+  partList.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'm3d-label';
+    el.textContent = p.label;
+    labelLayer.appendChild(el);
+    p.labelEl = el;
+    // anchor: average of children bbox centre
+    const bb = new THREE.Box3().setFromObject(p.group);
+    p.anchor = bb.getCenter(new THREE.Vector3());
+  });
+
+  /* ---- lights ---- */
+  scene.add(new THREE.HemisphereLight(0x9fb4d4, 0x140f08, 0.55));
+  const key = new THREE.DirectionalLight(0xfff0d8, 2.3);
+  key.position.set(-6, 9, 8); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.near = 1; key.shadow.camera.far = 60;
+  key.shadow.camera.left = -14; key.shadow.camera.right = 14;
+  key.shadow.camera.top = 14; key.shadow.camera.bottom = -14;
+  key.shadow.bias = -0.0004;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xf0a830, 1.3); rim.position.set(8, 3, -7); scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xbfd0ff, 0.5); fill.position.set(5, -4, 6); scene.add(fill);
+
+  /* ---- contact shadow ---- */
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: 0.34 }));
+  ground.rotation.x = -Math.PI / 2; ground.position.y = -3.4; ground.receiveShadow = true; scene.add(ground);
+
+  /* ---- frame the camera to the assembled model ---- */
+  const bbox = new THREE.Box3().setFromObject(root);
+  const center = bbox.getCenter(new THREE.Vector3());
+  const size = bbox.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fitDist = (maxDim * 1.45) / Math.tan((camera.fov * Math.PI / 180) / 2);
+  const camDir = new THREE.Vector3(0.12, 0.34, 1).normalize();
+  const camTarget = center.clone();
+  function placeCamera() {
+    camera.position.copy(camTarget).add(camDir.clone().multiplyScalar(fitDist));
+    camera.lookAt(camTarget);
+  }
+
+  /* ---- sizing ---- */
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    placeCamera();
+    if (composer) { composer.setPixelRatio(DPR); composer.setSize(w, h); }
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  /* ---- scroll-driven state + render loop ---- */
+  let targetExplode = 0, curExplode = 0, scrollP = 0;
+  const tmp = new THREE.Vector3();
+  const projV = new THREE.Vector3();
+  let last = performance.now();
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    curExplode += (targetExplode - curExplode) * Math.min(1, dt * 8);  // smooth
+
+    // turntable: scroll drives base yaw, plus a gentle idle sway
+    root.rotation.y = -0.55 + scrollP * 1.15 + Math.sin(now / 3500) * 0.05;
+    root.rotation.x = -0.12;
+
+    // spin live mechanism (faster as it assembles, calmer when exploded)
+    const spinFactor = 0.4 + (1 - curExplode) * 0.8;
+    spinners.forEach(sp => { sp.m.rotation[sp.ax] += sp.s * dt * spinFactor; });
+
+    // explode: push each part along its direction
+    partList.forEach(p => {
+      p.group.position.copy(p.home).addScaledVector(p.dir, curExplode * 3.1);
+    });
+
+    if (composer) composer.render(); else renderer.render(scene, camera);
+
+    // project labels
+    const rect = stage.getBoundingClientRect();
+    const showLabels = curExplode > 0.2;
+    partList.forEach(p => {
+      const el = p.labelEl;
+      if (!showLabels) { el.style.opacity = '0'; return; }
+      tmp.copy(p.anchor).addScaledVector(p.dir, curExplode * 3.1);
+      tmp.applyMatrix4(root.matrixWorld);
+      projV.copy(tmp).project(camera);
+      const vis = projV.z < 1;
+      el.style.opacity = vis ? String((curExplode - 0.2) / 0.8) : '0';
+      el.style.left = ((projV.x * 0.5 + 0.5) * rect.width) + 'px';
+      el.style.top  = ((-projV.y * 0.5 + 0.5) * rect.height) + 'px';
+    });
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ---- public API used by the scroll driver ---- */
+  window.__MECH3D = {
+    render(p, explode /*, eased */) {
+      scrollP = p;
+      targetExplode = explode;
+    }
+  };
+
+  stage.classList.add('has3d');   // hide SVG, reveal canvas
+})();
+
+</script>
+</body>
+</html>
